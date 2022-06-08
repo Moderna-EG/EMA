@@ -1,0 +1,12 @@
+.employee-main {
+    display: flex;
+}
+
+.employee-wrapper {
+    width: 83%;
+    margin: 3rem 0 3rem 3rem;
+    background-color: #F0F2F5;
+    padding: 1.4rem 2rem;
+    border-radius: 5px;
+
+}
