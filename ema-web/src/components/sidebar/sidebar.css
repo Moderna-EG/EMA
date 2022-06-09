@@ -31,6 +31,7 @@ a:hover {
 .employee-side-bar {
     display: flex;
     align-items: stretch;
+    justify-content: center;
 }
 
 .sidebar-icons ul li:hover {
@@ -47,3 +48,9 @@ a:hover {
     position: absolute;
     bottom: 1rem;
 }
+
+@media only screen and (max-width: 650px) {
+    .sidebar-icons {
+        display: none;
+    }
+  }

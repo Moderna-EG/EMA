@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './permissionForms.css'
 import { userRequest } from '../../api/requests'
+import { ThreeDots } from 'react-loader-spinner'
 
 const ExchangePermissionForm = ({ modal }) => {
 
@@ -16,6 +17,8 @@ const ExchangePermissionForm = ({ modal }) => {
     const [quantityError, setQuantityError] = useState('')
     const [priceError, setPriceError] = useState('')
 
+    const [loading, setLoading] = useState(false)
+
     const getItems = async () => {
         const response = await userRequest.get('/inventory/items')
         return response.data.items
@@ -27,6 +30,8 @@ const ExchangePermissionForm = ({ modal }) => {
     }
 
     const submit = () => {
+
+        setLoading(true)
 
         if(!item) {
             return setItemError('الصنف مطلوب')
@@ -59,10 +64,12 @@ const ExchangePermissionForm = ({ modal }) => {
 
         userRequest.post('/inventory/exchange-permissions', exchangePermissionData)
         .then(response =>{
+            setLoading(false)
             clearInputs()
              modal(response.data.message)
             })
         .catch(error => {
+            setLoading(false)
             const response = error.response.data
 
             if(response.field === 'quantity') {
@@ -145,7 +152,9 @@ const ExchangePermissionForm = ({ modal }) => {
                         <div className="permission-form-btns-right"></div>
                         <div className="permission-form-btns-left">
                             <button onClick={clearInputs}>الغاء</button>
-                            <button className="submit-btn" onClick={submit}>تسجيل</button>
+                            <button className="submit-btn" onClick={submit}>
+                            { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل'}
+                            </button>
                         </div>
                 </div>
             </div>

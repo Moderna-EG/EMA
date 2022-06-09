@@ -8,5 +8,22 @@
     background-color: #F0F2F5;
     padding: 1.4rem 2rem;
     border-radius: 5px;
+}
 
+@media only screen and (max-width: 650px) {
+
+    body {
+        background-color: #F0F2F5;
+    }
+    
+    .employee-main {
+        background-color: #F0F2F5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .employee-wrapper {
+        margin-left: 0;
+    }
 }

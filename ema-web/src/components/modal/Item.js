@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './modal.css'
 import { userRequest } from '../../api/requests'
 import SuccessModal from './success'
+import { ThreeDots } from 'react-loader-spinner'
 
 const ItemModal = ({ modal }) => {
 
@@ -12,6 +13,9 @@ const ItemModal = ({ modal }) => {
     const [codeError, setCodeError] = useState()
 
     const [showSuccessModal, setShowSuccessModal] = useState(false)
+    const [successMessage, setSuccessMessage] = useState('')
+
+    const [loading, setLoading] = useState(false)
 
 
     const closeModals = () => {
@@ -21,11 +25,16 @@ const ItemModal = ({ modal }) => {
 
     const submitItem = () => {
 
+        setLoading(true)
+
         userRequest.post('/inventory/items', { name, code })
         .then(response => {
+            setLoading(false)
             setShowSuccessModal(true)
+            setSuccessMessage(response.data.message)
         })
         .catch(error => {
+            setLoading(false)
             const response = error.response.data
 
             if(response.field === 'name') {
@@ -42,7 +51,7 @@ const ItemModal = ({ modal }) => {
 
     return (
         <div className="modal-container">
-            {showSuccessModal ? <SuccessModal closeModal={closeModals} /> : null }
+            {showSuccessModal ? <SuccessModal closeModal={closeModals} message={successMessage} /> : null }
             <div class="modal-wrapper">
                 <div className="modal-header">
                     <h3>
@@ -68,7 +77,9 @@ const ItemModal = ({ modal }) => {
                 </form>
                 <div className="modal-footer">
                     <button className="cancel" onClick={modal}>الغاء</button>  
-                    <button className="submit" onClick={submitItem}>انشاء</button>     
+                    <button className="submit" onClick={submitItem}>
+                        { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل'}    
+                    </button>     
                 </div>
             </div>
         </div>

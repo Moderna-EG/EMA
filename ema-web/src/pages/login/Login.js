@@ -3,6 +3,7 @@ import './login.css'
 import logo from '../../images/EMA logo.png'
 import { authRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
+import { ThreeDots } from 'react-loader-spinner'
 
 const Login = (props) => {
 
@@ -14,11 +15,16 @@ const Login = (props) => {
     const [emailError, setEmailError] = useState()
     const [passwordError, setPasswordError] = useState()
 
+    const [loading, setLoading] = useState(false)
+
     const loginUser = (e) => {
         e.preventDefault()
+
+        setLoading(true)
         
         authRequest.post('/auth/login', { email, password })
         .then(response => {
+            setLoading(false)
             
             const user = response.data
 
@@ -28,6 +34,7 @@ const Login = (props) => {
             }
         })
         .catch(error => {
+            setLoading(false)
             console.log(error.response.data)
             const response = error.response.data
 
@@ -66,7 +73,7 @@ const Login = (props) => {
                             <input type="password" onChange={e => setPassword(e.target.value)} placeholder="كلمة المرور" />
                         </div>
                         <div className="login-form-btns">
-                            <input type="submit" value="تسجيل الدخول" onClick={loginUser}/>
+                        { loading ? <ThreeDots color="red" height={80} width={80} /> : <input type="submit" value="تسجيل الدخول" onClick={loginUser}/> }
                         </div>
                         <div>
                             <span className="forgot-password">هل نسيت كلمة السر</span>

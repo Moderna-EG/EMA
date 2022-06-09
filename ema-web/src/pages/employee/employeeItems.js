@@ -20,7 +20,7 @@ const EmployeeItems = () => {
     return (
         <div>
             <Navbar />
-            {showModal ? <ItemModal modal={closeModal}/> : null }
+            {showModal ? <ItemModal modal={closeModal} /> : null }
             <div className="employee-main">
                 <div>
                     <Sidebar />

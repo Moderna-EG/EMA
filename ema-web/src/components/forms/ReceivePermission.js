@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './permissionForms.css'
 import { userRequest } from '../../api/requests'
+import { ThreeDots } from 'react-loader-spinner'
 
 const ReceivePermissionForm = ({ modal }) => {
 
@@ -15,6 +16,8 @@ const ReceivePermissionForm = ({ modal }) => {
     const [providerError, setProviderError] = useState('')
     const [quantityError, setQuantityError] = useState('')
     const [priceError, setPriceError] = useState('')
+
+    const [loading, setLoading] = useState(false)
     
 
     const getItems = async () => {
@@ -36,6 +39,8 @@ const ReceivePermissionForm = ({ modal }) => {
 
     const submit = (e) => {
         e.preventDefault()
+
+        setLoading(true)
 
         if(!item) {
             return setItemError('الصنف مطلوب')
@@ -63,16 +68,19 @@ const ReceivePermissionForm = ({ modal }) => {
             itemId: pickedItem.id,
             providerId: pickedProvider.id,
             userId: user.id,
-            quantity: quantity,
-            price: price,
+            quantity: parseInt(quantity),
+            price: parseInt(price),
         }
 
         userRequest.post('/inventory/receive-permissions', receivePermissionData)
         .then(response => { 
+            setLoading(false)
             clearInputs()
             modal(response.data.message)
         })
         .catch(error => {
+
+            setLoading(false)
 
             const response = error.response.data
 
@@ -127,12 +135,12 @@ const ReceivePermissionForm = ({ modal }) => {
                         <div>
                             <label>الكمية</label>
                             <p>{quantityError}</p>
-                            <input type="numeric" value={quantity} onChange={e => setQuantity(parseInt(e.target.value))} placeholder="كمية الصنف المستلم" required />
+                            <input type="numeric" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="كمية الصنف المستلم" required />
                         </div>
                         <div>
                             <label>السعر</label>
                             <p>{priceError}</p>
-                            <input type="numeric" value={price} placeholder="سعر الصنف المستلم" onChange={e => setPrice(parseInt(e.target.value))} required />
+                            <input type="numeric" value={price} placeholder="سعر الصنف المستلم" onChange={e => setPrice(e.target.value)} required />
                         </div>
                     </div>
                     <div className="permission-form-right">
@@ -152,7 +160,9 @@ const ReceivePermissionForm = ({ modal }) => {
                         <div className="permission-form-btns-right"></div>
                         <div className="permission-form-btns-left">
                             <button onClick={clearInputs}>الغاء</button>
-                            <input type="submit" form="receive-permission" className="submit-btn" value="تسجيل" onClick={submit} />
+                            <button type="submit" form="receive-permission" className="submit-btn" value="تسجيل" onClick={submit}>
+                                    { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل'}
+                            </button>
                         </div>
                 </div>
             </div>

@@ -39,3 +39,28 @@
 }
 
 
+@media only screen and (max-width: 650px) {
+    .navbar-left {
+        align-items: flex-start;
+    }
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        flex-direction: column-reverse;
+        margin: 0;
+        padding: 0;
+    }
+    .navbar-right span{
+        padding: .5rem .5rem 0 .5rem;
+    }
+    .navbar-container {
+        width: 100%;
+    }
+
+    .navbar-section {
+        padding: .5rem 0rem 0rem 0rem;
+    }
+
+}
+
