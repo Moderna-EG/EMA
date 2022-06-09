@@ -70,3 +70,10 @@
 .modal-footer .cancel {
     font-weight: bold;
 }
+
+@media only screen and (max-width: 650px) {
+
+    .modal-wrapper form {
+        padding: 3rem 2.5rem;
+    }
+}
