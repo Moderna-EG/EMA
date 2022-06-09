@@ -15,7 +15,7 @@
     body {
         background-color: #F0F2F5;
     }
-    
+
     .employee-main {
         background-color: #F0F2F5;
         display: flex;
@@ -25,5 +25,6 @@
 
     .employee-wrapper {
         margin-left: 0;
+        width: 100%;
     }
 }
