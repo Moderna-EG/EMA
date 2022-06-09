@@ -11,7 +11,7 @@ const   loginUser = async (request, response) => {
         if(!email) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user email is required',
+                message: 'البريد الإلكتروني للمستخدم مطلوب',
                 field: 'email'
             })
         }
@@ -21,7 +21,7 @@ const   loginUser = async (request, response) => {
         if(user.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'invalid email',
+                message: 'بريد إلكتروني خاطئ',
                 field: 'email'
             })
         }
@@ -31,7 +31,7 @@ const   loginUser = async (request, response) => {
         if(USER_PASSWORD != password) {
             return response.status(406).json({
                 accepted: false,
-                message: 'invalid credentials',
+                message: 'كلمة السر خاطئة',
                 field: 'password'
             })
         }
