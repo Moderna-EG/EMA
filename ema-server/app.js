@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const dotenv = require('dotenv').config()
 const config = require('./config/config')
 const cors = require('cors')
+const path = require('path')
 
 
 app = express()
@@ -26,10 +27,7 @@ app.use('/api/inventory', require('./routes/inventory/client'))
 app.get('/', (request, response) => {
 
 
-    return response.status(200).json({
-        accepted: true,
-        message: 'welcome to EMA server'
-    })
+    return response.sendFile(path.join(__dirname + '/index.html'))
 })
 
 
