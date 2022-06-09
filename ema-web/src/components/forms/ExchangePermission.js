@@ -31,8 +31,6 @@ const ExchangePermissionForm = ({ modal }) => {
 
     const submit = () => {
 
-        setLoading(true)
-
         if(!item) {
             return setItemError('الصنف مطلوب')
         }
@@ -48,6 +46,8 @@ const ExchangePermissionForm = ({ modal }) => {
         if(!price) {
             return setPriceError('السعر مطلوب')
         }
+
+        setLoading(true)
 
         const pickedItem = items.filter(itemElement => itemElement.name === item)[0]
         const pickedClient = clients.filter(clientElement => clientElement.name === client)[0]

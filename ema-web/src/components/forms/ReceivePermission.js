@@ -40,8 +40,6 @@ const ReceivePermissionForm = ({ modal }) => {
     const submit = (e) => {
         e.preventDefault()
 
-        setLoading(true)
-
         if(!item) {
             return setItemError('الصنف مطلوب')
         }
@@ -57,6 +55,8 @@ const ReceivePermissionForm = ({ modal }) => {
         if(!price) {
             return setPriceError('السعر مطلوب')
         }
+
+        setLoading(true)
 
         const pickedItem = items.filter(itemElement => itemElement.name === item)[0]
         const pickedProvider = providers.filter(providerElement => providerElement.name === provider)[0]

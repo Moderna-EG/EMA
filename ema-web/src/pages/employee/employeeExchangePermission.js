@@ -4,6 +4,7 @@ import Sidebar from '../../components/sidebar/EmployeeSidebar'
 import ExchangePermissionForm from '../../components/forms/ExchangePermission'
 import './employee.css'
 import SuccessModal from '../../components/modal/success'
+import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 
 const EmployeeExchangePermission = () => {
 
@@ -28,6 +29,7 @@ const EmployeeExchangePermission = () => {
                     <Sidebar />
                 </div>
                 <div className="employee-wrapper">
+                    <SideMenuIcons />
                     <ExchangePermissionForm modal={showModal} />
                 </div>
             </div>

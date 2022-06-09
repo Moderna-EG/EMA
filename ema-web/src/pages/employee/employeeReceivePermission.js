@@ -4,6 +4,7 @@ import Sidebar from '../../components/sidebar/EmployeeSidebar'
 import ReceivePermissionForm from '../../components/forms/ReceivePermission'
 import './employee.css'
 import SuccessModal from '../../components/modal/success'
+import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 
 const EmployeeReceivePermission = () => {
 
@@ -28,6 +29,7 @@ const EmployeeReceivePermission = () => {
                     <Sidebar />
                 </div>
                 <div className="employee-wrapper">
+                    <SideMenuIcons />
                     <ReceivePermissionForm modal={showModal}/>
                 </div>
             </div>
