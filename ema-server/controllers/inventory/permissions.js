@@ -25,18 +25,18 @@ const saveReceivePermissionItems = async (items, permissionId) => {
 
         const item = items[i]
 
-        const storedItem = await itemModel.getItemById(item.itemId)
+        const storedItem = await itemModel.getItemById(item.id)
         const UPDATED_QUANTITY = storedItem[0].quantity + item.quantity
 
         const addPermission = receivePermissionItemModel.addReceivePermissionItem(
-            items[i].itemId,
+            items[i].id,
             permissionId,
             items[i].quantity,
             items[i].price,
             items[i].quantity * items[i].price
         )
 
-        const updateItem = itemModel.updateItemQuantityById(item.itemId, UPDATED_QUANTITY)
+        const updateItem = itemModel.updateItemQuantityById(item.id, UPDATED_QUANTITY)
 
         const transact = await Promise.all([addPermission, updateItem])
 
@@ -49,7 +49,7 @@ const saveExchangePermissionItems = async (items, permissionId) => {
 
         const item = items[i]
 
-        const storedItem = await itemModel.getItemById(item.itemId)
+        const storedItem = await itemModel.getItemById(item.id)
 
         if(storedItem[0].quantity == 0 || storedItem[0].quantity < item.quantity) {
 
@@ -58,14 +58,14 @@ const saveExchangePermissionItems = async (items, permissionId) => {
         const UPDATED_QUANTITY = storedItem[0].quantity - item.quantity
 
         const addPermission = exchangePermissionItemModel.addExchangePermissionItem(
-            items[i].itemId,
+            items[i].id,
             permissionId,
             items[i].quantity,
             items[i].price,
             items[i].quantity * items[i].price
         )
 
-        const updateItem = itemModel.updateItemQuantityById(item.itemId, UPDATED_QUANTITY)
+        const updateItem = itemModel.updateItemQuantityById(item.id, UPDATED_QUANTITY)
 
         const transact = await Promise.all([addPermission, updateItem])
 
