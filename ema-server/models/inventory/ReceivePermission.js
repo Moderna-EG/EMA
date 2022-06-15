@@ -2,17 +2,28 @@ const dbConnect = require('../../config/db')
 
 class ReceivePermission {
     
-    async addReceivePermission(itemId, providerId, userId, quantity, price, bookValue) {
+    async addReceivePermission(providerId, userId, totalValue, permissionDate) {
 
         const pool = await dbConnect()
         const query = `
-            INSERT INTO ReceivePermissions (itemId, providerId, userId, quantity, price, bookValue)
-            VALUES ($1, $2, $3, $4, $5, $6)`
+            INSERT INTO ReceivePermissions (providerId, userId, totalValue, permissionDate)
+            VALUES ($1, $2, $3, $4)`
         const client = await pool.connect()
-        const result = await client.query(query, [itemId, providerId, userId, quantity, price, bookValue])
+        const result = await client.query(query, [providerId, userId, totalValue, permissionDate])
         client.release()
 
         return true
+    }
+
+    async getReceivePermissionByMainData(providerId, userId, permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `SELECT * FROM ReceivePermissions WHERE ProviderId=$1 AND UserId=$2 AND PermissionDate=$3`
+        const client = await pool.connect()
+        const result = await client.query(query, [providerId, userId, permissionDate])
+        client.release()
+
+        return result.rows
     }
 
     async getReceivePermissions() {

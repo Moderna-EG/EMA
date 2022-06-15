@@ -6,4 +6,6 @@ router.get('/items', (request, response) => itemController.getItems(request, res
 
 router.post('/items', verifyToken, (request, response) => itemController.addItem(request, response))
 
+router.get('/items/:itemId', (request, response) => itemController.getItem(request, response))
+
 module.exports = router

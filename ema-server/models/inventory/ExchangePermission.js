@@ -2,14 +2,14 @@ const dbConnect = require('../../config/db')
 
 class ExchangePermission {
     
-    async addExchangePermission(itemId, clientId, userId, quantity, price, bookValue) {
+    async addExchangePermission(clientId, userId, totalValue, permissionDate) {
 
         const pool = await dbConnect()
         const query = `
-            INSERT INTO ExchangePermissions (itemId, clientId, userId, quantity, price, bookValue)
-            VALUES ($1, $2, $3, $4, $5, $6)`
+            INSERT INTO ExchangePermissions (clientId, userId, totalValue, permissionDate)
+            VALUES ($1, $2, $3, $4)`
         const client = await pool.connect()
-        const result = await client.query(query, [itemId, clientId, userId, quantity, price, bookValue])
+        const result = await client.query(query, [clientId, userId, totalValue, permissionDate])
         client.release()
 
         return true
@@ -36,6 +36,28 @@ class ExchangePermission {
 
         return data.rows
         
+    }
+
+    async getExchangePermissionByMainData(clientId, userId, permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `SELECT * FROM ExchangePermissions WHERE clientId=$1 AND UserId=$2 AND PermissionDate=$3`
+        const client = await pool.connect()
+        const result = await client.query(query, [clientId, userId, permissionDate])
+        client.release()
+
+        return result.rows
+    }
+
+    async deleteExchangePermission(Id) {
+
+        const pool = await dbConnect()
+        const query = `DELETE FROM exchangePermissions WHERE ID = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [Id])
+        client.release()
+
+        return true
     }
 
 }

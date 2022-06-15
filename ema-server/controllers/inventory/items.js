@@ -87,4 +87,27 @@ const addItem = async (request, response) => {
     }
 }
 
-module.exports = { getItems, addItem }
+const getItem = async (request, response) => {
+
+    try {
+
+        const { itemId } = request.params
+
+        const item = await itemModal.getItemById(itemId)
+
+        return response.status(200).json({
+            accepted: true,
+            item: item
+        })
+
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+module.exports = { getItems, addItem, getItem }

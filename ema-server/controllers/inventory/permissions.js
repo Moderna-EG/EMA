@@ -1,34 +1,83 @@
 const receivePermissionModel = require('../../models/inventory/ReceivePermission')
 const ExchangePermissionModel = require('../../models/inventory/ExchangePermission')
+const receivePermissionItemModel = require('../../models/inventory/ReceivePermissionItem')
+const exchangePermissionItemModel = require('../../models/inventory/ExchangePermissionItem')
 const itemModel = require('../../models/inventory/Item')
 const providerModel = require('../../models/inventory/Provider')
 const userModel = require('../../models/inventory/User')
 const clientModel = require('../../models/inventory/Client')
 
 
+const calculateItemsTotalPrice = (items) => {
+
+    let total = 0
+
+    for(let i=0;i<items.length;i++) {
+        total += (items[i].quantity * items[i].price)
+    }
+
+    return total
+}
+
+const saveReceivePermissionItems = async (items, permissionId) => {
+
+    for(let i=0;i<items.length;i++) {
+
+        const item = items[i]
+
+        const storedItem = await itemModel.getItemById(item.itemId)
+        const UPDATED_QUANTITY = storedItem[0].quantity + item.quantity
+
+        const addPermission = receivePermissionItemModel.addReceivePermissionItem(
+            items[i].itemId,
+            permissionId,
+            items[i].quantity,
+            items[i].price,
+            items[i].quantity * items[i].price
+        )
+
+        const updateItem = itemModel.updateItemQuantityById(item.itemId, UPDATED_QUANTITY)
+
+        const transact = await Promise.all([addPermission, updateItem])
+
+    }
+}
+
+const saveExchangePermissionItems = async (items, permissionId) => {
+
+    for(let i=0;i<items.length;i++) {
+
+        const item = items[i]
+
+        const storedItem = await itemModel.getItemById(item.itemId)
+
+        if(storedItem[0].quantity == 0 || storedItem[0].quantity < item.quantity) {
+
+            continue
+        }
+        const UPDATED_QUANTITY = storedItem[0].quantity - item.quantity
+
+        const addPermission = exchangePermissionItemModel.addExchangePermissionItem(
+            items[i].itemId,
+            permissionId,
+            items[i].quantity,
+            items[i].price,
+            items[i].quantity * items[i].price
+        )
+
+        const updateItem = itemModel.updateItemQuantityById(item.itemId, UPDATED_QUANTITY)
+
+        const transact = await Promise.all([addPermission, updateItem])
+
+    }
+}
+
+
 const addReceivePermission = async (request, response) => {
 
     try {
 
-        const { itemId, providerId, userId, quantity, price } = request.body
-
-        if(!itemId) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'الصنف مطلوب',
-                field: 'item'
-            })
-        }
-
-        const checkItem = await itemModel.getItemById(itemId)
-        
-        if(checkItem.length == 0) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف عنصر غير صالح',
-                field: 'item'
-            })
-        }
+        const { providerId, userId, items } = request.body
 
         if(!providerId) {
             return response.status(406).json({
@@ -66,33 +115,104 @@ const addReceivePermission = async (request, response) => {
             })
         }
 
-        if(!quantity || quantity == 0 || !Number.isInteger(quantity)) {
+        if(!items) {
             return response.status(406).json({
                 accepted: false,
-                message: 'مطلوب كمية الصنف المستلمة',
-                field: 'quantity'
+                message: 'لا توجد اصناف',
+                field: 'items'
             })
         }
 
-        if(!price || price == 0 || !Number.isInteger(price)) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'مطلوب سعر الصنف المستلم',
-                field: 'price'
-            })
-        }
+        const PERMISSION_DATE = new Date()
+        const TOTAL_VALUE = calculateItemsTotalPrice(items)
 
-        const BOOK_VALUE = quantity * price
-        const NEW_QUANTITY = checkItem[0].quantity + quantity
+        const receivePemrmission = await receivePermissionModel.addReceivePermission(providerId, userId, TOTAL_VALUE, PERMISSION_DATE)
 
-        const [ recorded, updated] = await Promise.all([
-            receivePermissionModel.addReceivePermission(itemId, providerId, userId, quantity, price, BOOK_VALUE),
-            itemModel.updateItemQuantityById(itemId, NEW_QUANTITY)
-        ])
+        const activeReceivePermission = await receivePermissionModel.getReceivePermissionByMainData(providerId, userId, PERMISSION_DATE)
+
+        const PERMISSION_ID = activeReceivePermission[0].id
+
+        const recordItems = await saveReceivePermissionItems(items, PERMISSION_ID)
 
         return response.status(200).json({
             accepted: true,
             message: 'تمت إضافة إذن استلام الصنف بنجاح'
+        })
+
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const addExchangePermission = async (request, response) => {
+
+    try {
+
+        const { clientId, userId, items } = request.body
+
+        if(!clientId) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'العميل مطلوب',
+                field: 'client'
+            })
+        }
+
+        const checkClient = await clientModel.getClientById(clientId)
+        
+        if(checkClient.length == 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'معرف العميل غير صالح',
+                field: 'client'
+            })
+        }
+
+        if(!userId) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'معرف المستخدم مطلوب',
+                field: 'user'
+            })
+        }
+
+        const checkUser = await userModel.getUserById(userId)
+        
+        if(checkUser.length == 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'هوية مستخدم غير صالحه',
+                field: 'user'
+            })
+        }
+
+        if(!items) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا توجد اصناف',
+                field: 'items'
+            })
+        }
+
+        const PERMISSION_DATE = new Date()
+        const TOTAL_VALUE = calculateItemsTotalPrice(items)
+
+        const exchangePemrmission = await ExchangePermissionModel.addExchangePermission(clientId, userId, TOTAL_VALUE, PERMISSION_DATE)
+
+        const activeExchangePermission = await ExchangePermissionModel.getExchangePermissionByMainData(clientId, userId, PERMISSION_DATE)
+
+        const PERMISSION_ID = activeExchangePermission[0].id
+
+        const recordItems = await saveExchangePermissionItems(items, PERMISSION_ID)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت إضافة إذن صرف الصنف بنجاح'
         })
 
 
@@ -125,114 +245,7 @@ const getReceivePermissions = async (request, response) => {
     }
 }
 
-const addExchangePermission = async (request, response) => {
 
-    try {
-
-        const { itemId, clientId, userId, quantity, price } = request.body
-
-        if(!itemId) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف الصنف مطلوب',
-                field: 'item'
-            })
-        }
-
-        const checkItem = await itemModel.getItemById(itemId)
-
-        if(checkItem.length == 0) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف الصنف غير صالح',
-                field: 'item'
-            })
-        }
-
-        if(!clientId) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف العميل مطلوب',
-                field: 'client'
-            })
-        }
-
-        const checkClient = await clientModel.getClientById(clientId)
-
-        if(checkClient.length == 0) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف العميل غير صالح',
-                field: 'client'
-            })
-        }
-
-        if(!userId) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'معرف المستخدم مطلوب',
-                field: 'user'
-            })
-        }
-
-        const checkUser = await userModel.getUserById(userId)
-
-        if(checkUser.length == 0) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'هوية مستخدم غير صالحه',
-                field: 'user'
-            })
-        }
-
-        if(!quantity || quantity == 0 || !Number.isInteger(quantity)) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'مطلوب كمية الصنف المستلمة',
-                field: 'quantity'
-            })
-        }
-
-        const CURRENT_ITEM_QUANTITY = checkItem[0].quantity
-        const REQUESTED_QUANTITY = quantity
-
-        if(REQUESTED_QUANTITY > CURRENT_ITEM_QUANTITY) {
-            return response.status(406).json({
-                accepted: false,
-                message: `لا توجد كمية كافية ، يتوفر فقط ${CURRENT_ITEM_QUANTITY} قطعة`,
-                field: 'quantity'
-            })
-        }
-
-        if(!price || price == 0 || !Number.isInteger(price)) {
-            return response.status(406).json({
-                accepted: false,
-                message: 'مطلوب سعر الصنف المستلم',
-                field: 'price'
-            })
-        }
-
-        const UPDATED_ITEM_QUANTITY = CURRENT_ITEM_QUANTITY - REQUESTED_QUANTITY
-        const BOOK_VALUE = REQUESTED_QUANTITY * price
-
-        const [ recorded, updated] = await Promise.all([
-            ExchangePermissionModel.addExchangePermission(itemId, clientId, userId, REQUESTED_QUANTITY, price, BOOK_VALUE),
-            itemModel.updateItemQuantityById(itemId, UPDATED_ITEM_QUANTITY)
-        ])
-
-        return response.status(200).json({
-            accepted: true,
-            message: 'تمت إضافة إذن صرف الصنف بنجاح'
-        })
-
-    } catch(error) {
-        console.error(error)
-        return response.status(500).json({
-            accepted: false,
-            message: 'internal server error'
-        })
-    }
-}
 
 const getExchangePermissions = async (request, response) => {
 
