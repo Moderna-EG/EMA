@@ -7,6 +7,8 @@ router.post('/receive-permissions', verifyToken, (request, response) => permissi
 
 router.get('/receive-permissions', verifyToken, (request, response) => permissionController.getReceivePermissions(request, response))
 
+router.get('/receive-permissions/users/:userId', verifyToken, (request, response) => permissionController.getUserReceivePermission(request, response))
+
 router.get('/exchange-permissions', verifyToken, (request, response) => permissionController.getExchangePermissions(request, response))
 
 router.post('/exchange-permissions', verifyToken, (request, response) => permissionController.addExchangePermission(request, response))

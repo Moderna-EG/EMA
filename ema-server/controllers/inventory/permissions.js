@@ -149,6 +149,31 @@ const addReceivePermission = async (request, response) => {
     }
 }
 
+const getUserReceivePermission = async (request, response) => {
+
+    try {
+
+        const { userId } = request.params
+
+        const permissions = await receivePermissionModel.getReceivePermissionsByUser(userId)
+        const newestPermission = permissions[0]
+        const permissionItems = await receivePermissionItemModel.getReceivePermissionItemById(newestPermission.permissionid)
+
+        return response.status(200).json({
+            accepted: true,
+            permission: newestPermission,
+            permissionItems: permissionItems
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 const addExchangePermission = async (request, response) => {
 
     try {
@@ -267,4 +292,10 @@ const getExchangePermissions = async (request, response) => {
     }
 }
 
-module.exports = { addReceivePermission, getReceivePermissions, addExchangePermission, getExchangePermissions }
+module.exports = {
+    addReceivePermission, 
+    getReceivePermissions, 
+    addExchangePermission, 
+    getExchangePermissions,
+    getUserReceivePermission
+ }
