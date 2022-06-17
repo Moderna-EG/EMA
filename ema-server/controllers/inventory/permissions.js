@@ -156,8 +156,49 @@ const getUserReceivePermission = async (request, response) => {
         const { userId } = request.params
 
         const permissions = await receivePermissionModel.getReceivePermissionsByUser(userId)
+
+        if(permissions.length == 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يوجد اذن استلام بهذا المعرف'
+            })
+        }
+
         const newestPermission = permissions[0]
         const permissionItems = await receivePermissionItemModel.getReceivePermissionItemById(newestPermission.permissionid)
+
+        return response.status(200).json({
+            accepted: true,
+            permission: newestPermission,
+            permissionItems: permissionItems
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getUserExchangePermission = async (request, response) => {
+
+    try {
+
+        const { userId } = request.params
+
+        const permissions = await ExchangePermissionModel.getExchangePermissionsByUser(userId)
+
+        if(permissions.length == 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يوجد اذن صرف بهذا المعرف'
+            })
+        }
+
+        const newestPermission = permissions[0]
+        const permissionItems = await exchangePermissionItemModel.getExchangePermissionItemById(newestPermission.permissionid)
 
         return response.status(200).json({
             accepted: true,
@@ -297,5 +338,6 @@ module.exports = {
     getReceivePermissions, 
     addExchangePermission, 
     getExchangePermissions,
-    getUserReceivePermission
+    getUserReceivePermission,
+    getUserExchangePermission
  }

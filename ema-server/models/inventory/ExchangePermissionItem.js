@@ -15,6 +15,26 @@ class ExchangePermissionItem {
         return true
     }
 
+    async getExchangePermissionItemById(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            ExchangePermissionsItems.Id, ExchangePermissionsItems.quantity,
+            ExchangePermissionsItems.price, ExchangePermissionsItems.bookValue,
+            ExchangePermissionsItems.permissionId,
+            items.name, items.code
+            FROM ExchangePermissionsItems
+            INNER JOIN items ON items.ID = ExchangePermissionsItems.itemId
+            WHERE ExchangePermissionsItems.PermissionId = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return result.rows
+    }
+
 }
 
 module.exports = new ExchangePermissionItem()

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const { response, request } = require('express')
+const { verify } = require('jsonwebtoken')
 const permissionController = require('../../controllers/inventory/permissions')
 const { verifyToken } = require('../../middlewares/verifyToken')
 
@@ -12,5 +13,7 @@ router.get('/receive-permissions/users/:userId', verifyToken, (request, response
 router.get('/exchange-permissions', verifyToken, (request, response) => permissionController.getExchangePermissions(request, response))
 
 router.post('/exchange-permissions', verifyToken, (request, response) => permissionController.addExchangePermission(request, response))
+
+router.get('/exchange-permissions/users/:userId', verifyToken, (request, response) => permissionController.getUserExchangePermission(request, response))
 
 module.exports = router
