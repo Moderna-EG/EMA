@@ -4,8 +4,8 @@ import Sidebar from '../../components/sidebar/EmployeeSidebar'
 import ItemsTable from '../../components/tables/items'
 import './employee.css'
 import ItemModal from '../../components/modal/Item'
-import { Link, NavLink } from 'react-router-dom'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
+
 
 const EmployeeItems = () => {
 

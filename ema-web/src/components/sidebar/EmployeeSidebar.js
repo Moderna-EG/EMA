@@ -5,6 +5,8 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Link, NavLink } from 'react-router-dom'
+import NewspaperIcon from '@mui/icons-material/Newspaper'
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard'
 
 const Sidebar = () => {
     return (
@@ -17,15 +19,27 @@ const Sidebar = () => {
                     </NavLink> 
                 </li>
                 <li>
-                    <NavLink to="/inventory/receive-permissions">
+                    <NavLink to="/inventory/employee/providers">
                         <AddBusinessIcon />
                         <span> استلام</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/inventory/exchange-permissions">
+                    <NavLink to="/inventory/employee/clients">
                         <LocalShippingIcon />
                         <span>  صرف</span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/inventory/receive-permission/view">
+                        <NewspaperIcon />
+                        <span>اذن استلام </span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/inventory/exchange-permission/view">
+                        <DeveloperBoardIcon />
+                        <span>اذن صرف</span>
                     </NavLink>
                 </li>
                 <li className="logout">

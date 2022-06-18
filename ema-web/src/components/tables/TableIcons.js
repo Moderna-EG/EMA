@@ -17,6 +17,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import AccountBalanceIcon  from '@material-ui/icons/AccountBalance'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -37,7 +38,8 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
     Auction: forwardRef((props, ref) => <AccountBalanceIcon {...props} ref={ref} />),
-    Refresh: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />)
+    Refresh: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
+    Confirm: forwardRef((props, ref) => <CheckCircleIcon {...props} ref={ref} style={{ color: "dodgerblue" }}/>),
   };
 
 export default tableIcons

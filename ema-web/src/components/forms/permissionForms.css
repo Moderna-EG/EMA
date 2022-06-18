@@ -4,12 +4,22 @@
     text-align: right;
 }
 
+.permission-form .header {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
 
 .permission-form-main {
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
     flex-wrap: wrap-reverse;
+}
+
+.permission-form a {
+    color: #fff;
 }
 
 .permission-form-main p {
@@ -99,6 +109,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .permission-form-btns-left .submit-btn {
+        padding: .5rem .8rem;
     }
 
     .permission-form h3 {

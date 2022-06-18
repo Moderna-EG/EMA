@@ -6,31 +6,13 @@ import { userRequest } from '../../api/requests'
 
 const ItemsTable = ({ modal }) => {
 
-    /*const data = [
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'جرار', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-        { name: 'فلتر', code: 12345, quantity: 20 },
-    ]*/
 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+
+        //generatePDF()
         userRequest.get('/inventory/items')
         .then(items => {
             setData(items.data.items)
@@ -44,7 +26,7 @@ const ItemsTable = ({ modal }) => {
         { title: 'الكمية', field: 'quantity', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'الكود', field: 'code', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'اسم الصنف', field: 'name', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
-        { title: 'صنف', render: prop => <ContentPasteIcon /> }
+        { title: 'صنف', render: prop => <ContentPasteIcon /> },
     ]
     
     return (<div>
@@ -53,7 +35,10 @@ const ItemsTable = ({ modal }) => {
         isLoading={loading}
         columns={columns} 
         data={data} 
-        options={ { pageSize: 10, exportButton: true } }
+        localization={{
+            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+        }}
+        options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
         actions={[
             {
                 icon: TableIcons.Add,

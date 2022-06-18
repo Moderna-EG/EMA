@@ -5,35 +5,25 @@ import ReceivePermissionForm from '../../components/forms/ReceivePermission'
 import './employee.css'
 import SuccessModal from '../../components/modal/success'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
+import ReceivePermissionCartTable from '../../components/tables/receivePermissionCart'
+import { userRequest } from '../../api/requests'
 
-const EmployeeReceivePermission = () => {
+const ReceivePermissionCart = () => {
 
-    const [successModal, setSuccessModal] = useState(false)
-    const [modalMessage, setModalMessage] = useState('')
-
-    const closeModal = () => {
-        setSuccessModal(false)
-    }
-
-    const showModal = (message) => {
-        setSuccessModal(true)
-        setModalMessage(message)
-    }
 
     return (
         <div>
             <Navbar />
-            { successModal ? <SuccessModal closeModal={closeModal} message={modalMessage}/> : undefined }
             <div className="employee-main">
                 <div>
                     <Sidebar />
                 </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
-                    <ReceivePermissionForm modal={showModal}/>
+                    <ReceivePermissionCartTable />
                 </div>
             </div>
         </div>
     )
 }
-export default EmployeeReceivePermission
+export default ReceivePermissionCart

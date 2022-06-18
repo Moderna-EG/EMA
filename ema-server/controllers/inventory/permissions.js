@@ -160,7 +160,7 @@ const getUserReceivePermission = async (request, response) => {
         if(permissions.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'لا يوجد اذن استلام بهذا المعرف'
+                message: 'لا يوجد اذن استلام للموظف'
             })
         }
 
@@ -193,7 +193,7 @@ const getUserExchangePermission = async (request, response) => {
         if(permissions.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'لا يوجد اذن صرف بهذا المعرف'
+                message: 'لا يوجد اذن صرف للموظف'
             })
         }
 
