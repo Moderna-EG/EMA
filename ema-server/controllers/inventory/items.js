@@ -1,4 +1,5 @@
 const itemModal = require('../../models/inventory/Item')
+const receivePermissionItemModel = require('../../models/inventory/ReceivePermissionItem')
 
 const getItems = async (request, response) => {
 
@@ -110,4 +111,36 @@ const getItem = async (request, response) => {
     }
 }
 
-module.exports = { getItems, addItem, getItem }
+const getItemAveragePrice = async (request, response) => {
+
+    try {
+
+        const { itemId } = request.params
+
+        const [totalBookValue, totalQuantity] = await Promise.all([
+            receivePermissionItemModel.getSumOfBookValueOfItem(itemId),
+            receivePermissionItemModel.getTotalQuantityOfItem(itemId)
+        ])
+
+        const BOOK_VALUE = totalBookValue[0].sum
+        const QUANTITY = totalQuantity[0].sum
+
+        const AVERAGE_PRICE = BOOK_VALUE / QUANTITY
+
+
+        return response.status(200).json({
+            accepted: true,
+            price: AVERAGE_PRICE
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+
+module.exports = { getItems, addItem, getItem, getItemAveragePrice }

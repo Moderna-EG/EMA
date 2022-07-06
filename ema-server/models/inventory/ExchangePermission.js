@@ -15,7 +15,7 @@ class ExchangePermission {
         return true
     }
 
-    async getExchangePermissions() {
+    /*async getExchangePermissions() {
 
         const pool = await dbConnect()
         const query = `
@@ -36,6 +36,28 @@ class ExchangePermission {
 
         return data.rows
         
+    }*/
+
+
+    async getExchangePermissions() {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            ExchangePermissions.ID AS PermissionId,
+            clients.name AS ClientName, clients.code AS ClientCode,
+            users.name AS UserName,
+            ExchangePermissions.totalValue, ExchangePermissions.permissionDate
+            FROM ExchangePermissions
+            INNER JOIN clients ON clients.ID = ExchangePermissions.clientId
+            INNER JOIN users ON users.ID = ExchangePermissions.userId
+            ORDER BY ExchangePermissions.ID DESC
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [])
+        client.release()
+
+        return result.rows
     }
 
     async getExchangePermissionsByUser(userId) {

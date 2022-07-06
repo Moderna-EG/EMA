@@ -8,4 +8,6 @@ router.post('/items', verifyToken, (request, response) => itemController.addItem
 
 router.get('/items/:itemId', (request, response) => itemController.getItem(request, response))
 
+router.get('/items/:itemId/average-price', (request, response) => itemController.getItemAveragePrice(request, response))
+
 module.exports = router

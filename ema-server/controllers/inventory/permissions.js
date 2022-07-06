@@ -72,7 +72,6 @@ const saveExchangePermissionItems = async (items, permissionId) => {
     }
 }
 
-
 const addReceivePermission = async (request, response) => {
 
     try {
@@ -306,12 +305,10 @@ const getReceivePermissions = async (request, response) => {
         console.error(error)
         return response.status(500).json({
             accepted: false,
-            message: 'internal server started'
+            message: 'internal server error'
         })
     }
 }
-
-
 
 const getExchangePermissions = async (request, response) => {
 
@@ -328,7 +325,7 @@ const getExchangePermissions = async (request, response) => {
         console.error(error)
         return response.status(500).json({
             accepted: false,
-            message: 'internal server started'
+            message: 'internal server error'
         })
     }
 }

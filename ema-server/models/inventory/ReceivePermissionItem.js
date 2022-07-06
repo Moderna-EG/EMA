@@ -35,6 +35,36 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+    async getTotalQuantityOfItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT SUM(quantity)
+        FROM ReceivePermissionsItems
+        WHERE ItemID = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return result.rows
+    }
+
+    async getSumOfBookValueOfItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT SUM(BookValue)
+            FROM ReceivePermissionsItems
+            WHERE ItemID = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return result.rows
+    }
+
 }
 
 module.exports = new ReceivePermissionItem()
