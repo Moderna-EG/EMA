@@ -35,6 +35,29 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+    async getReceivePermissionOfItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            ReceivePermissionsItems.Id, ReceivePermissionsItems.quantity,
+            ReceivePermissionsItems.price, ReceivePermissionsItems.bookValue,
+            ReceivePermissionsItems.permissionId, ReceivePermissionsItems.itemId AS itemId,
+            items.name, items.code,
+            ReceivePermissions.permissionDate, ReceivePermissions.providerId
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.permissionId
+            INNER JOIN items ON items.ID = ReceivePermissionsItems.itemId
+            WHERE ReceivePermissionsItems.itemId = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return result.rows
+
+    }
+
 
     async getTotalQuantityOfItem(itemId) {
 

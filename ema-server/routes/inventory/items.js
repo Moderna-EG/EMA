@@ -10,4 +10,6 @@ router.get('/items/:itemId', (request, response) => itemController.getItem(reque
 
 router.get('/items/:itemId/average-price', (request, response) => itemController.getItemAveragePrice(request, response))
 
+router.get('/items/:itemId/item-card', (request, response) => itemController.getItemCard(request, response))
+
 module.exports = router
