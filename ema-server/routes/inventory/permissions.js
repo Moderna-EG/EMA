@@ -16,4 +16,8 @@ router.post('/exchange-permissions', (request, response) => permissionController
 
 router.get('/exchange-permissions/users/:userId', (request, response) => permissionController.getUserExchangePermission(request, response))
 
+router.get('/receive-permissions/:permissionId', (request, response) => permissionController.getReceivePermission(request, response))
+
+router.get('/exchange-permissions/:permissionId', (request, response) => permissionController.getExchangePermission(request, response))
+
 module.exports = router

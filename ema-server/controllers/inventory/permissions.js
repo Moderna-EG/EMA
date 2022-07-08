@@ -1,23 +1,28 @@
 const receivePermissionModel = require('../../models/inventory/ReceivePermission')
-const ExchangePermissionModel = require('../../models/inventory/ExchangePermission')
+const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
 const receivePermissionItemModel = require('../../models/inventory/ReceivePermissionItem')
 const exchangePermissionItemModel = require('../../models/inventory/ExchangePermissionItem')
 const itemModel = require('../../models/inventory/Item')
 const providerModel = require('../../models/inventory/Provider')
 const userModel = require('../../models/inventory/User')
 const clientModel = require('../../models/inventory/Client')
+const ExchangePermissionItem = require('../../models/inventory/ExchangePermissionItem')
 
 
-const calculateItemsTotalPrice = (items) => {
+const calculateItemsTotalPrice = async (items) => {
 
     let total = 0
 
     for(let i=0;i<items.length;i++) {
-        total += (items[i].quantity * items[i].price)
+
+        total += (parseInt(items[i].quantity) * items[i].price)
+        console.log('here')
     }
 
+    console.log(total)
     return total
 }
+
 
 const saveReceivePermissionItems = async (items, permissionId) => {
 
@@ -49,7 +54,7 @@ const saveExchangePermissionItems = async (items, permissionId) => {
 
         const item = items[i]
 
-        const storedItem = await itemModel.getItemById(item.id)
+        const storedItem = await itemModel.getItemById(item.itemId)
 
         if(storedItem[0].quantity == 0 || storedItem[0].quantity < item.quantity) {
 
@@ -187,7 +192,7 @@ const getUserExchangePermission = async (request, response) => {
 
         const { userId } = request.params
 
-        const permissions = await ExchangePermissionModel.getExchangePermissionsByUser(userId)
+        const permissions = await exchangePermissionModel.getExchangePermissionsByUser(userId)
 
         if(permissions.length == 0) {
             return response.status(406).json({
@@ -265,11 +270,11 @@ const addExchangePermission = async (request, response) => {
         }
 
         const PERMISSION_DATE = new Date()
-        const TOTAL_VALUE = calculateItemsTotalPrice(items)
+        const TOTAL_VALUE = await calculateItemsTotalPrice(items)
 
-        const exchangePemrmission = await ExchangePermissionModel.addExchangePermission(clientId, userId, TOTAL_VALUE, PERMISSION_DATE)
+        const exchangePemrmission = await exchangePermissionModel.addExchangePermission(clientId, userId, TOTAL_VALUE, PERMISSION_DATE)
 
-        const activeExchangePermission = await ExchangePermissionModel.getExchangePermissionByMainData(clientId, userId, PERMISSION_DATE)
+        const activeExchangePermission = await exchangePermissionModel.getExchangePermissionByMainData(clientId, userId, PERMISSION_DATE)
 
         const PERMISSION_ID = activeExchangePermission[0].id
 
@@ -314,11 +319,63 @@ const getExchangePermissions = async (request, response) => {
 
     try {
 
-        const exchangePermissions = await ExchangePermissionModel.getExchangePermissions()
+        const exchangePermissions = await exchangePermissionModel.getExchangePermissions()
 
         return response.status(200).json({
             accepted: true,
             permissions: exchangePermissions
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getReceivePermission = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const [permission, permissionItems] = await Promise.all([
+            receivePermissionModel.getReceivePermission(permissionId),
+            receivePermissionItemModel.getReceivePermissionItemById(permissionId),
+        ])
+
+        return response.status(200).json({
+            accepted: true,
+            permission: permission[0],
+            permissionItems
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getExchangePermission = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const [permission, permissionItems] = await Promise.all([
+            exchangePermissionModel.getExchangePermission(permissionId),
+            exchangePermissionItemModel.getExchangePermissionItemById(permissionId)
+        ])
+
+        return response.status(200).json({
+            accepted: true,
+            permission: permission[0],
+            permissionItems
         })
 
     } catch(error) {
@@ -336,5 +393,7 @@ module.exports = {
     addExchangePermission, 
     getExchangePermissions,
     getUserReceivePermission,
-    getUserExchangePermission
+    getUserExchangePermission,
+    getReceivePermission,
+    getExchangePermission
  }

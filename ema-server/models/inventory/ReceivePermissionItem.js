@@ -35,6 +35,7 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+
     async getTotalQuantityOfItem(itemId) {
 
         const pool = await dbConnect()

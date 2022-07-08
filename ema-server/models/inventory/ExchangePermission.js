@@ -104,6 +104,28 @@ class ExchangePermission {
         return true
     }
 
+    async getExchangePermission(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            ExchangePermissions.ID AS PermissionId,
+            clients.name AS ClientName, clients.code AS ClientCode,
+            users.name AS UserName,
+            ExchangePermissions.totalValue, ExchangePermissions.permissionDate
+            FROM ExchangePermissions
+            INNER JOIN clients ON clients.ID = ExchangePermissions.clientId
+            INNER JOIN users ON users.ID = ExchangePermissions.userId
+            WHERE ExchangePermissions.ID = $1
+            ORDER BY ExchangePermissions.ID DESC
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return result.rows
+    }
+
 }
 
 module.exports = new ExchangePermission()
