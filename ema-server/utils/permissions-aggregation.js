@@ -2,7 +2,7 @@
 const joinReceivePermissionsByProviders = (permissions, providers) => {
 
     for(let i=0;i<permissions.length;i++) {
-        for(let j=0;j<providers.length;i++) {
+        for(let j=0;j<providers.length;j++) {
             if(permissions[i].providerid == providers[j].id) {
                 permissions[i].providercode = providers[j].code
                 permissions[i].providername = providers[j].name
