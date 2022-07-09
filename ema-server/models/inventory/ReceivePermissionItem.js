@@ -40,8 +40,8 @@ class ReceivePermissionItem {
         const pool = await dbConnect()
         const query = `
             SELECT
-            ReceivePermissionsItems.Id, ReceivePermissionsItems.quantity,
-            ReceivePermissionsItems.price, ReceivePermissionsItems.bookValue,
+            ReceivePermissionsItems.Id, ReceivePermissionsItems.quantity AS ReceivePermissionQuantity,
+            ReceivePermissionsItems.price AS ReceivePermissionPrice, ReceivePermissionsItems.bookValue AS ReceivePermissionBookValue,
             ReceivePermissionsItems.permissionId AS ReceivePermissionId, ReceivePermissionsItems.itemId AS itemId,
             items.name, items.code,
             ReceivePermissions.permissionDate, ReceivePermissions.providerId

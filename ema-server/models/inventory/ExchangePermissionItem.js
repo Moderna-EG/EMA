@@ -40,8 +40,8 @@ class ExchangePermissionItem {
         const pool = await dbConnect()
         const query = `
             SELECT
-            ExchangePermissionsItems.Id, ExchangePermissionsItems.quantity,
-            ExchangePermissionsItems.price, ExchangePermissionsItems.bookValue,
+            ExchangePermissionsItems.Id, ExchangePermissionsItems.quantity AS exchangepermissionquantity,
+            ExchangePermissionsItems.price AS exchangepermissionprice, ExchangePermissionsItems.bookValue AS exchangepermissionbookvalue,
             ExchangePermissionsItems.permissionId AS ExchangePermissionId, ExchangePermissionsItems.itemId AS itemId,
             items.name, items.code,
             ExchangePermissions.permissionDate, ExchangePermissions.clientId
