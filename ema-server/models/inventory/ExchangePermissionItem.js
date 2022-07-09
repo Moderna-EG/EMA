@@ -42,7 +42,7 @@ class ExchangePermissionItem {
             SELECT
             ExchangePermissionsItems.Id, ExchangePermissionsItems.quantity,
             ExchangePermissionsItems.price, ExchangePermissionsItems.bookValue,
-            ExchangePermissionsItems.permissionId, ExchangePermissionsItems.itemId AS itemId,
+            ExchangePermissionsItems.permissionId AS ExchangePermissionId, ExchangePermissionsItems.itemId AS itemId,
             items.name, items.code,
             ExchangePermissions.permissionDate, ExchangePermissions.clientId
             FROM ExchangePermissionsItems

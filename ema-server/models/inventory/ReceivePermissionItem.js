@@ -42,7 +42,7 @@ class ReceivePermissionItem {
             SELECT
             ReceivePermissionsItems.Id, ReceivePermissionsItems.quantity,
             ReceivePermissionsItems.price, ReceivePermissionsItems.bookValue,
-            ReceivePermissionsItems.permissionId, ReceivePermissionsItems.itemId AS itemId,
+            ReceivePermissionsItems.permissionId AS ReceivePermissionId, ReceivePermissionsItems.itemId AS itemId,
             items.name, items.code,
             ReceivePermissions.permissionDate, ReceivePermissions.providerId
             FROM ReceivePermissionsItems
