@@ -57,6 +57,22 @@ class ExchangePermissionItem {
         return result.rows
     }
 
+    async getItemQuantityByDate(itemId, date) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT SUM(quantity)
+            FROM ExchangePermissionsItems
+            INNER JOIN ExchangePermissions ON ExchangePermissions.ID = ExchangePermissionsItems.PermissionId
+            WHERE ItemID = $1 AND ExchangePermissions.PermissionDate::date <= $2::date
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, date])
+        client.release()
+
+        return result.rows
+    }
+
     
 
 }

@@ -74,6 +74,22 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+    async getTotalQuantityOfItemByDate(itemId, date) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT SUM(quantity)
+        FROM ReceivePermissionsItems
+        INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.permissionId
+        WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, date])
+        client.release()
+
+        return result.rows
+    }
+
     async getSumOfBookValueOfItem(itemId) {
 
         const pool = await dbConnect()
@@ -88,6 +104,87 @@ class ReceivePermissionItem {
 
         return result.rows
     }
+
+    async getItemQuantityByDate(itemId, date) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT SUM(quantity)
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
+            WHERE ItemID = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, date])
+        client.release()
+
+        return result.rows
+    }
+
+    async getAveragePriceOfItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT AVG(price)
+            FROM ReceivePermissionsItems
+            WHERE ItemId = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return result.rows
+    }
+
+    async getAveragePriceOfItemByDate(itemId, date) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT AVG(price)
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
+            WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, date])
+        client.release()
+
+        return result.rows
+    }
+
+    async getAverageBookValueOfItemByDate(itemId, date) {
+        
+        const pool = await dbConnect()
+        const query = `
+            SELECT AVG(BookValue)
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
+            WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, date])
+        client.release()
+
+        return result.rows
+    }
+
+    async getAverageBookValueOfItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT AVG(bookValue)
+            FROM ReceivePermissionsItems
+            WHERE ItemId = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return result.rows
+    }
+
+
+
 
 }
 

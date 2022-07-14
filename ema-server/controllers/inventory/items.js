@@ -6,6 +6,43 @@ const clientModel = require('../../models/inventory/Client')
 const { joinReceivePermissionsByProviders, joinExchangePermissionsByClients } = require('../../utils/permissions-aggregation')
 
 
+const addItemAveragesByTime = async (permissions) => {
+
+    let currentQuantity = 0
+
+    for(let i=0;i<permissions.length;i++) {
+
+        let itemAveragePriceFunction = receivePermissionItemModel.getAveragePriceOfItemByDate
+        let itemAverageBookValueFunction = receivePermissionItemModel.getAverageBookValueOfItemByDate
+
+            const [itemAveragePrice, itemAverageBookValue] = await Promise.all([
+                itemAveragePriceFunction(permissions[i].itemid, permissions[i].permissiondate),
+                itemAverageBookValueFunction(permissions[i].itemid, permissions[i].permissiondate),
+            ])
+    
+            const AVERAGE_PRICE = Math.trunc(itemAveragePrice[0].avg)
+            const AVERAGE_BOOK_VALUE = Math.trunc(itemAverageBookValue[0].avg)
+
+            if(permissions[i].permissiontype == 'receive') {
+
+                const TOTAL_QUANTITY = permissions[i].receivepermissionquantity
+                currentQuantity += TOTAL_QUANTITY
+
+            } else if(permissions[i].permissiontype == 'exchange') {
+
+                const TOTAL_QUANTITY = permissions[i].exchangepermissionquantity
+                currentQuantity -= TOTAL_QUANTITY
+
+            }    
+    
+            permissions[i].momentaverageprice = AVERAGE_PRICE
+            permissions[i].momentaveragebookvalue = AVERAGE_BOOK_VALUE
+            permissions[i].momentTotalQuantity = Math.abs(currentQuantity)
+        }
+
+        return permissions
+    }
+
 const getItems = async (request, response) => {
 
     try {
@@ -122,16 +159,9 @@ const getItemAveragePrice = async (request, response) => {
 
         const { itemId } = request.params
 
-        const [totalBookValue, totalQuantity] = await Promise.all([
-            receivePermissionItemModel.getSumOfBookValueOfItem(itemId),
-            receivePermissionItemModel.getTotalQuantityOfItem(itemId)
-        ])
+        const itemAveragePrice = await receivePermissionItemModel.getAveragePriceOfItem(itemId)
 
-        const BOOK_VALUE = totalBookValue[0].sum
-        const QUANTITY = totalQuantity[0].sum
-
-        const AVERAGE_PRICE = BOOK_VALUE / QUANTITY
-
+        const AVERAGE_PRICE = Math.trunc(itemAveragePrice[0].avg)
 
         return response.status(200).json({
             accepted: true,
@@ -199,6 +229,9 @@ const getItemCard = async (request, response) => {
 
             return PERMISSION_1_DATE - PERMISSION_2_DATE
         })
+
+        permissions = await addItemAveragesByTime(permissions)
+
 
         return response.status(200).json({
             accepted: true,

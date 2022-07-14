@@ -9,17 +9,30 @@ const clientModel = require('../../models/inventory/Client')
 const ExchangePermissionItem = require('../../models/inventory/ExchangePermissionItem')
 
 
-const calculateItemsTotalPrice = async (items) => {
+const calculateItemsTotalPrice = (items) => {
 
     let total = 0
 
     for(let i=0;i<items.length;i++) {
 
         total += (parseInt(items[i].quantity) * items[i].price)
-        console.log('here')
     }
 
-    console.log(total)
+    return total
+}
+
+const calculateExchangeItemsTotalPrice = async (items) => {
+
+    let total = 0
+
+    for(let i=0;i<items.length;i++) {
+
+        const itemAveragePrice = await receivePermissionItemModel.getAveragePriceOfItem(items[i].itemId)
+        const ITEM_PRICE = Math.trunc(itemAveragePrice[0].avg)
+
+        total += (parseInt(items[i].quantity) * ITEM_PRICE)
+    }
+
     return total
 }
 
@@ -30,18 +43,19 @@ const saveReceivePermissionItems = async (items, permissionId) => {
 
         const item = items[i]
 
-        const storedItem = await itemModel.getItemById(item.id)
+        const storedItem = await itemModel.getItemById(item.itemId)
+        console.log(storedItem)
         const UPDATED_QUANTITY = storedItem[0].quantity + item.quantity
 
         const addPermission = receivePermissionItemModel.addReceivePermissionItem(
-            items[i].id,
+            items[i].itemId,
             permissionId,
             items[i].quantity,
             items[i].price,
             items[i].quantity * items[i].price
         )
 
-        const updateItem = itemModel.updateItemQuantityById(item.id, UPDATED_QUANTITY)
+        const updateItem = itemModel.updateItemQuantityById(item.itemId, UPDATED_QUANTITY)
 
         const transact = await Promise.all([addPermission, updateItem])
 
@@ -57,22 +71,20 @@ const saveExchangePermissionItems = async (items, permissionId) => {
         const storedItem = await itemModel.getItemById(item.itemId)
 
         if(storedItem[0].quantity == 0 || storedItem[0].quantity < item.quantity) {
-
             continue
         }
         const UPDATED_QUANTITY = storedItem[0].quantity - item.quantity
 
-        const addPermission = exchangePermissionItemModel.addExchangePermissionItem(
-            items[i].id,
-            permissionId,
-            items[i].quantity,
-            items[i].price,
-            items[i].quantity * items[i].price
-        )
+        const itemAveragePrice = await receivePermissionItemModel.getAveragePriceOfItem(items[i].itemId)
+        const ITEM_PRICE = Math.trunc(itemAveragePrice[0].avg)
 
-        const updateItem = itemModel.updateItemQuantityById(item.id, UPDATED_QUANTITY)
+        const addPermission = exchangePermissionItemModel.addExchangePermissionItem
+        const updateItem = itemModel.updateItemQuantityById
 
-        const transact = await Promise.all([addPermission, updateItem])
+        const [permission, updatedItem] = await Promise.all([
+            addPermission(items[i].itemId, permissionId, items[i].quantity, ITEM_PRICE, items[i].quantity * ITEM_PRICE),
+            updateItem(item.itemId, UPDATED_QUANTITY)
+        ])
 
     }
 }
@@ -270,7 +282,7 @@ const addExchangePermission = async (request, response) => {
         }
 
         const PERMISSION_DATE = new Date()
-        const TOTAL_VALUE = await calculateItemsTotalPrice(items)
+        const TOTAL_VALUE = await calculateExchangeItemsTotalPrice(items)
 
         const exchangePemrmission = await exchangePermissionModel.addExchangePermission(clientId, userId, TOTAL_VALUE, PERMISSION_DATE)
 
