@@ -37,7 +37,7 @@ const addItemAveragesByTime = async (permissions) => {
     
             permissions[i].momentaverageprice = AVERAGE_PRICE
             permissions[i].momentaveragebookvalue = AVERAGE_BOOK_VALUE
-            permissions[i].momentTotalQuantity = Math.abs(currentQuantity)
+            permissions[i].momenttotalquantity = Math.abs(currentQuantity)
         }
 
         return permissions
