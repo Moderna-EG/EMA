@@ -1,13 +1,19 @@
 .employee-main {
     display: flex;
+    flex-direction: row;
 }
 
 .employee-wrapper {
-    width: 83%;
-    margin: 3rem 0 3rem 3rem;
-    background-color: #F0F2F5;
-    padding: 1.4rem 2rem;
+    margin: 3rem 1rem 3rem;
+    padding: 1rem 1rem;
     border-radius: 5px;
+    width: 100%;
+    padding: 1rem;
+    background-color: #F0F2F5;
+}
+
+.item-card-table {
+    max-width: 98%;
 }
 
 .show {

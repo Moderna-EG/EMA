@@ -25,12 +25,12 @@ const EmployeeReceivePermission = () => {
             <Navbar />
             { successModal ? <SuccessModal closeModal={closeModal} message={modalMessage}/> : undefined }
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ReceivePermissionForm />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

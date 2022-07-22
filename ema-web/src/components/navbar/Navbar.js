@@ -29,7 +29,7 @@ const Navbar = () => {
             </div>
             <div className="navbar-right">
                 <span>{ name }</span>
-                <AccountCircleIcon />
+                <img src={`https://avatars.dicebear.com/api/initials/${name}.svg`} style={{ width: 40, height: 40, borderRadius: '50%' }}/>
             </div>
         </div>
         </div>

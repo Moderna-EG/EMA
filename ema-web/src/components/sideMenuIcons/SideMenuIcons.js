@@ -6,6 +6,7 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import AddBusinessIcon from '@mui/icons-material/AddBusiness'
 import NewspaperIcon from '@mui/icons-material/Newspaper'
 import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard'
+import LogoutIcon from '@mui/icons-material/Logout'
 import './sideMenuIcons.css'
 
 
@@ -17,24 +18,19 @@ const SideMenuIcons = () => {
                     <ContentPasteIcon />
                 </button>
             </NavLink>
-            <NavLink to="/inventory/employee/providers">
+            <NavLink to="/inventory/receive-permissions">
                 <button className="show-sidebar">
                     <AddBusinessIcon />
                 </button>
             </NavLink>
-            <NavLink to="/inventory/employee/clients">
+            <NavLink to="/inventory/exchange-permissions">
                 <button className="show-sidebar">
                     <LocalShippingIcon />
                 </button>
             </NavLink>
-            <NavLink to="/inventory/receive-permission/view">
+            <NavLink to="/login">
                 <button className="show-sidebar">
-                    <NewspaperIcon />
-                </button>
-            </NavLink>
-            <NavLink to="/inventory/exchange-permission/view">
-                <button className="show-sidebar">
-                    <DeveloperBoardIcon />
+                    <LogoutIcon />
                 </button>
             </NavLink>
         </div>

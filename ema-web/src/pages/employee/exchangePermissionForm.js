@@ -25,12 +25,12 @@ const EmployeeExchangePermission = () => {
             <Navbar />
             { successModal ? <SuccessModal closeModal={closeModal} message={modalMessage}/> : undefined }
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ExchangePermissionForm modal={showModal} />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

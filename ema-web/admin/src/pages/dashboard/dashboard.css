@@ -1,0 +1,12 @@
+.dashboard-main {
+    display: flex;
+}
+
+.items-wrapper {
+    width: 83%;
+    margin: 5rem 0 3rem 3rem;
+    background-color: #F0F2F5;
+    padding: .8rem .8rem;
+    border-radius: 5px;
+
+}

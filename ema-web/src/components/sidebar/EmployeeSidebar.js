@@ -19,27 +19,15 @@ const Sidebar = () => {
                     </NavLink> 
                 </li>
                 <li>
-                    <NavLink to="/inventory/employee/providers">
+                    <NavLink to="/inventory/receive-permissions">
                         <AddBusinessIcon />
                         <span> استلام</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/inventory/employee/clients">
+                    <NavLink to="/inventory/exchange-permissions">
                         <LocalShippingIcon />
                         <span>  صرف</span>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/inventory/receive-permission/view">
-                        <NewspaperIcon />
-                        <span>اذن استلام </span>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/inventory/exchange-permission/view">
-                        <DeveloperBoardIcon />
-                        <span>اذن صرف</span>
                     </NavLink>
                 </li>
                 <li className="logout">

@@ -25,12 +25,12 @@ const EmployeeItems = () => {
             <Navbar />
             {showModal ? <ItemModal modal={closeModal} /> : null }
             <div className="employee-main">
-                <div>
-                    { showSidebar ? <Sidebar /> : null}
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ItemsTable modal={openModal}/>
+                </div>
+                <div>
+                    { showSidebar ? <Sidebar /> : null}
                 </div>
             </div>
         </div>

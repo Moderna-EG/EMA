@@ -14,12 +14,12 @@ const Clients = () => {
         <div>
             <Navbar />
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ClientsTable />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

@@ -3,14 +3,30 @@ import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { userRequest } from '../../api/requests'
+import { useNavigate } from 'react-router-dom'
 
 const ItemsTable = ({ modal }) => {
 
+    const navigate = useNavigate()
 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
+    const [load, setLoad] = useState(true)
+    const [editable, setEditable] = useState(false)
+
+
+
 
     useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user')).user
+
+        console.log(user.role)
+
+        if(user.role === 'مالك') {
+            console.log('here')
+        }
+
 
         //generatePDF()
         userRequest.get('/inventory/items')
@@ -26,7 +42,8 @@ const ItemsTable = ({ modal }) => {
         { title: 'الكمية', field: 'quantity', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'الكود', field: 'code', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'اسم الصنف', field: 'name', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
-        { title: 'صنف', render: prop => <ContentPasteIcon /> },
+        { title: 'صنف', render: prop => <ContentPasteIcon />, headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
+        { title: 'كارتة الصنف',render: prop => <button className="action-btn" onClick={ e => navigate(`/inventory/items/${prop.id}/item-card`)}>عرض</button>, headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'}}
     ]
     
     return (<div>
@@ -53,6 +70,7 @@ const ItemsTable = ({ modal }) => {
                 onClick: () => setLoading(true)
             }
         ]}
+        
         icons={TableIcons} />
 
     </div>)

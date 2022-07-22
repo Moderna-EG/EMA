@@ -15,12 +15,12 @@ const ExchangePermissionCart = () => {
         <div>
             <Navbar />
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ExchangePermissionCartTable />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

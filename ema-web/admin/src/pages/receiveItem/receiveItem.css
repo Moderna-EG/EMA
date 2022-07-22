@@ -1,0 +1,14 @@
+.receive-items-main {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.receive-items-wrapper {
+    width: 83%;
+    margin: 3rem 0 3rem 3rem;
+    background-color: #F0F2F5;
+    padding: .8rem .8rem;
+    border-radius: 5px;
+}

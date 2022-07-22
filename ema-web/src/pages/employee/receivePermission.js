@@ -8,6 +8,9 @@ import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import ReceivePermissionTable from '../../components/tables/receivePermission'
 import { userRequest } from '../../api/requests'
 import ReceivePermissionInvoice from '../../components/printComponent/printReceivePermissionInvoice'
+import DownloadInvoicePdf from '../../components/downloads/downloadReceivePermission'
+
+
 
 const ReceivePermission = () => {
 
@@ -18,7 +21,10 @@ const ReceivePermission = () => {
     useEffect(() => {
 
         const user = JSON.parse(localStorage.getItem('user'))
-        userRequest(`/inventory/receive-permissions/users/${user.user.id}`)
+        
+        const permissionId = window.location.pathname.split('/')[3]
+
+        userRequest(`/inventory/receive-permissions/${permissionId}`)
         .then(response => {
             setPermissionItems(response.data.permissionItems)
             setPermission(response.data.permission)
@@ -31,13 +37,13 @@ const ReceivePermission = () => {
         <div>
             <Navbar />
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     { !loading ? <ReceivePermissionInvoice items={permissionItems} permission={permission} /> : ''}
                     <ReceivePermissionTable items={permissionItems} loading={loading} />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

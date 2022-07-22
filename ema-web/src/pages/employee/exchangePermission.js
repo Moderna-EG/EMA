@@ -18,7 +18,11 @@ const ReceivePermission = () => {
     useEffect(() => {
 
         const user = JSON.parse(localStorage.getItem('user'))
-        userRequest(`/inventory/exchange-permissions/users/${user.user.id}`)
+
+        const permissionId = window.location.pathname.split('/')[3]
+
+
+        userRequest(`/inventory/exchange-permissions/${permissionId}`)
         .then(response => {
             setPermissionItems(response.data.permissionItems)
             setPermission(response.data.permission)
@@ -31,14 +35,14 @@ const ReceivePermission = () => {
         <div>
             <Navbar />
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     { !loading ? <ExchangePermissionInvoice items={permissionItems} permission={permission}/> : '' }
                     <ExchangePermissionTable items={permissionItems} loading={loading} />
                     
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

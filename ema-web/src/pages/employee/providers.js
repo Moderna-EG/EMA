@@ -15,12 +15,12 @@ const Providers = () => {
         <div>
             <Navbar />
             <div className="employee-main">
-                <div>
-                    <Sidebar />
-                </div>
                 <div className="employee-wrapper">
                     <SideMenuIcons />
                     <ProvidersTable />
+                </div>
+                <div>
+                    <Sidebar />
                 </div>
             </div>
         </div>

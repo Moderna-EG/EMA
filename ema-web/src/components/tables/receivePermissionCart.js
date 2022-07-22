@@ -105,7 +105,7 @@ const ReceivePermissionCart = () => {
                 onClick: (event, rowData) => deleteItem(rowData.id)
             }
         ]}
-        options={ { pageSize: items.length } }
+        options={ { pageSize: 10 } }
         icons={TableIcons} />
     </div>)
 }
