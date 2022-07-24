@@ -1,6 +1,8 @@
 const userModel = require('../../models/inventory/User')
 const config = require('../../config/config')
 const jwt = require('jsonwebtoken')
+const { sendResetMail } = require('../../mail/resetMail')
+const bcrypt = require('bcrypt')
 
 const   loginUser = async (request, response) => {
 
@@ -25,6 +27,13 @@ const   loginUser = async (request, response) => {
                 field: 'email'
             })
         }
+
+
+        if(!user[0].isworking) return response.status(406).json({
+            accepted: false,
+            message: 'غير مسموح لك بلدخول',
+            field: 'authorization'
+        })
 
         const USER_PASSWORD = user[0].password
 
@@ -55,4 +64,74 @@ const   loginUser = async (request, response) => {
     }
 }
 
-module.exports = { loginUser }
+const sendForgetPasswordMail = async (request, response) => {
+
+    try {
+
+        const { email } = request.params
+
+        const users = await userModel.getUserByEmail(email)
+
+        if(users.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'هذا البريد غير مسجل',
+            field: 'email'
+        })
+
+        const user = users[0]
+
+        const userData = jwt.sign({ user }, config.SECRET_KEY, { expiresIn: '1h' })
+
+        console.log(user)
+
+        const isSent = await sendResetMail(user.email, user.name, userData)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تم ارسال البريد '
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const updatePassword = async (request, response) => {
+
+    try {
+
+        const { userId } = request.params
+
+        const { newPassword } = request.body
+
+        if(!newPassword) return response.status(406).json({
+            accepted: false,
+            message: 'كلمة المرور مطلوبة',
+            field: 'newPassword'
+        })
+
+        //const hashedPassword = bcrypt.hashSync(newPassword, config.SALT_ROUNDS)
+
+        //console.log(hashedPassword)
+
+        const updatePassword = await userModel.updatePassword(userId, newPassword)
+        
+        return response.status(200).json({
+            accepted: true,
+            message: 'تم تعديل كلمة المرور بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+module.exports = { loginUser, sendForgetPasswordMail, updatePassword }

@@ -16,9 +16,20 @@ class User {
     async getUsers() {
         
         const pool = await dbConnect()
-        const query = `SELECT ID, name, email, phone, role, registrationDate FROM users`
+        const query = `SELECT ID, name, email, phone, role, isWorking, registrationDate FROM users`
         const client = await pool.connect()
         const result = await client.query(query)
+        client.release()
+
+        return result.rows
+    }
+
+    async getUsersByRole(role) {
+        
+        const pool = await dbConnect()
+        const query = `SELECT ID, name, email, phone, role, registrationDate FROM users WHERE role=$1`
+        const client = await pool.connect()
+        const result = await client.query(query, [role])
         client.release()
 
         return result.rows
@@ -56,6 +67,51 @@ class User {
 
         return result.rows
 
+    }
+
+    async updateUser(Id, name, email, phone) {
+
+        const pool = await dbConnect()
+        const query = `
+        UPDATE users
+        SET name=$2, email=$3, phone=$4
+        WHERE Id = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [Id, name, email, phone])
+        client.release()
+
+        return true
+    }
+
+    async updateUserWorking(Id, status) {
+
+        const pool = await dbConnect()
+        const query = `
+        UPDATE users
+        SET isWorking=$2
+        WHERE Id = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [Id, status])
+        client.release()
+
+        return true
+    }
+
+    async updatePassword(Id, password) {
+
+        const pool = await dbConnect()
+        const query = `
+        UPDATE users
+        SET password=$2
+        WHERE Id = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [Id, password])
+        client.release()
+
+        return true
     }
 }
 

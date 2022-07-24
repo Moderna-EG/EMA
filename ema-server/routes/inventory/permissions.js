@@ -20,4 +20,12 @@ router.get('/receive-permissions/:permissionId', (request, response) => permissi
 
 router.get('/exchange-permissions/:permissionId', (request, response) => permissionController.getExchangePermission(request, response))
 
+router.patch('/receive-permissions/:permissionId', (request, response) => permissionController.updateReceivePermissionProvider(request, response))
+
+router.patch('/exchange-permissions/:permissionId', (request, response) => permissionController.updateExchangePermissionClient(request, response))
+
+router.get('/receive-permissions/providers/:providerId', (request, response) => permissionController.getProviderPermissions(request, response))
+
+router.get('/exchange-permissions/clients/:clientId', (request, response) => permissionController.getClientPermissions(request, response))
+
 module.exports = router

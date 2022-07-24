@@ -399,6 +399,149 @@ const getExchangePermission = async (request, response) => {
     }
 }
 
+const updateReceivePermissionProvider = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const { providerCode } = request.body
+
+        if(!providerCode) return response.status(406).json({
+            accepted: false,
+            message: 'كود المورد مطلوب',
+            field: 'providerCode'
+        }) 
+
+        const receivePermissionList = await receivePermissionModel.getReceivePermission(permissionId)
+
+        if(receivePermissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'معرف الاذن غير موجود',
+            field: 'permisisonId'
+        })
+
+        const providerList = await providerModel.getProviderByCode(providerCode)
+
+        if(providerList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'كود المورد غير موجود',
+            field: 'providerId'
+        })
+
+        const provider = providerList[0]
+        const permission = receivePermissionList[0]
+
+        const updatePermission = await receivePermissionModel.updateReceivePermissionProvider(permissionId, provider.id)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تم تعديل اذن الاستلام بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const updateExchangePermissionClient = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const { clientCode } = request.body
+
+        if(!clientCode) return response.status(406).json({
+            accepted: false,
+            message: 'كود العميل مطلوب',
+            field: 'clientCode'
+        }) 
+
+        const exchangePermissionList = await exchangePermissionModel.getExchangePermission(permissionId)
+
+        if(exchangePermissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'معرف الاذن غير موجود',
+            field: 'permisisonId'
+        })
+
+        const clientList = await clientModel.getClientByCode(clientCode)
+
+        if(clientList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'كود العميل غير موجود',
+            field: 'clientId'
+        })
+
+        const client = clientList[0]
+        const permission = exchangePermissionList[0]
+
+        const updatePermission = await exchangePermissionModel.updateExchangePermissionClient(permissionId, client.id)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تم تعديل اذن الصرف بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getProviderPermissions = async (request, response) => {
+
+    try {
+
+        const { providerId } = request.params
+
+        const permissions = await receivePermissionModel.getReceivePermissionsByProvider(providerId)
+
+        return response.status(200).json({
+            accepted: true,
+            permissions: permissions
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getClientPermissions = async (request, response) => {
+
+    try {
+
+        const { clientId } = request.params
+
+        const permissions = await exchangePermissionModel.getExchangePermissionsByClient(clientId)
+
+        return response.status(200).json({
+            accepted: true,
+            permissions: permissions
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+
 
 module.exports = {
     addReceivePermission, 
@@ -408,5 +551,9 @@ module.exports = {
     getUserReceivePermission,
     getUserExchangePermission,
     getReceivePermission,
-    getExchangePermission
+    getExchangePermission,
+    updateReceivePermissionProvider,
+    updateExchangePermissionClient,
+    getProviderPermissions,
+    getClientPermissions
  }

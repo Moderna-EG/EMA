@@ -46,6 +46,28 @@ class Client {
         return result.rows
     }
 
+    async getClientByName(name) {
+
+        const pool = await dbConnect()
+        const query = `SELECT * FROM clients WHERE name=$1`
+        const client = await pool.connect()
+        const result = await client.query(query, [name])
+        client.release()
+
+        return result.rows
+    }
+
+    async updateClientById(clientId, clientName, clientCode, clientDescription) {
+
+        const pool = await dbConnect()
+        const query = `UPDATE clients SET name=$2, code=$3, description=$4 WHERE ID = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [clientId, clientName, clientCode, clientDescription])
+        client.release()
+
+        return true
+    }
+
 
 }
 

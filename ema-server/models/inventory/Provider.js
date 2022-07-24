@@ -56,6 +56,19 @@ class Provider {
         return result.rows
     }
 
+    async updateProviderById(providerId, providerName, providerCode, providerDescription, providerPhone,providerAddress, providerPaymentMethod) {
+
+        const pool = await dbConnect()
+        const query = `UPDATE providers
+        SET name=$2, code=$3, description=$4, phone=$5, address=$6, paymentMethod=$7
+        WHERE ID = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [providerId, providerName, providerCode, providerDescription, providerPhone, providerAddress, providerPaymentMethod])
+        client.release()
+
+        return true
+    }
+
 }
 
 module.exports = new Provider()

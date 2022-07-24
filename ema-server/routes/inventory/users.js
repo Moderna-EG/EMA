@@ -5,4 +5,14 @@ router.post('/users', (request, response) => usersController.addUser(request, re
 
 router.get('/users', (request, response) => usersController.getUsers(request, response))
 
+router.get('/users/employees', (request, response) => usersController.getEmployees(request, response))
+
+router.get('/users/admins', (request, response) => usersController.getAdmins(request, response))
+
+router.put('/users/employees/:employeeId', (request, response) => usersController.updateEmployee(request, response))
+
+router.patch('/users/employees/:employeeId/block', (request, response) => usersController.blockEmployee(request, response))
+
+router.patch('/users/employees/:employeeId/enable', (request, response) => usersController.enableEmployee(request, response))
+
 module.exports = router

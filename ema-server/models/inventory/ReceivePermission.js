@@ -91,6 +91,28 @@ class ReceivePermission {
         return result.rows
     }
 
+    async getReceivePermissionsByProvider(providerId) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            ReceivePermissions.ID AS PermissionId,
+            providers.name AS ProviderName, providers.code AS ProviderCode,
+            users.name AS UserName,
+            ReceivePermissions.totalValue, ReceivePermissions.permissionDate
+            FROM ReceivePermissions
+            INNER JOIN providers ON providers.ID = ReceivePermissions.providerId
+            INNER JOIN users ON users.ID = ReceivePermissions.userId
+            WHERE ReceivePermissions.providerId = $1
+            ORDER BY ReceivePermissions.ID DESC
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [providerId])
+        client.release()
+
+        return result.rows
+    }
+
     async getReceivePermission(permissionId) {
 
         const pool = await dbConnect()
@@ -111,6 +133,22 @@ class ReceivePermission {
         client.release()
 
         return result.rows
+    }
+
+    async updateReceivePermissionProvider(permissionId, providerId) {
+
+        const pool = await dbConnect()
+        const query = `
+            UPDATE ReceivePermissions
+            SET
+            ProviderId=$2
+            WHERE ID = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId, providerId])
+        client.release()
+
+        return true
     }
 
 }

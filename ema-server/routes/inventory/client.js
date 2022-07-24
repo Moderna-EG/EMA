@@ -5,4 +5,6 @@ router.get('/clients', (request, response) => clientController.getClients(reques
 
 router.post('/clients', (request, response) => clientController.addClient(request,  response))
 
+router.put('/clients/:clientId', (request, response) => clientController.updateClient(request, response))
+
 module.exports = router

@@ -5,4 +5,6 @@ router.post('/providers', (request, response) => providerController.addProvider(
 
 router.get('/providers', (request, response) => providerController.getProviders(request, response))
 
+router.put('/providers/:providerId', (request, response) => providerController.updateProvider(request, response))
+
 module.exports = router

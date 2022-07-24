@@ -12,4 +12,6 @@ router.get('/items/:itemId/average-price', (request, response) => itemController
 
 router.get('/items/:itemId/item-card', (request, response) => itemController.getItemCard(request, response))
 
+router.put('/items/:itemId', (request, response) => itemController.updateItem(request, response))
+
 module.exports = router

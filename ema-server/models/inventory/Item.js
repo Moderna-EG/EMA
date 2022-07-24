@@ -68,6 +68,17 @@ class Item {
         return true
 
     }
+
+    async updateItemById(itemId, itemName, itemCode) {
+
+        const pool = await dbConnect()
+        const query = `UPDATE items SET name=$2, code=$3 WHERE ID = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, itemName, itemCode])
+        client.release()
+
+        return true
+    }
 }
 
 module.exports = new Item()

@@ -249,10 +249,94 @@ const getItemCard = async (request, response) => {
     }
 }
 
+const updateItem = async (request, response) => {
+
+    try {
+
+        const { itemId } = request.params
+
+        const { itemName, itemCode } = request.body
+
+
+        if(!itemName || !itemName.name) return response.status(406).json({
+            accepted: false,
+            message: 'اسم الصنف مطلوب',
+            field: 'itemName'
+        })
+
+        const itemsNames = await itemModel.getItemByName(itemName.name)
+
+        if(itemName.isNew) {
+
+            if(itemsNames.length != 0) return response.status(406).json({
+                accepted: false,
+                message: 'هذا اسم صنف اخر',
+                field: 'itemName'
+            }) 
+            
+        } else {
+
+            if(itemsNames.length == 0 || (itemsNames.length == 1 && itemsNames[0].id != itemId)) return response.status(406).json({
+                accepted: false,
+                message: 'هذا ليس اسم الصنف الغير معدل',
+                field: 'itemName'
+            })
+        }
+
+
+        if(!itemCode || !itemCode.code) return response.status(406).json({
+            accepted: false,
+            message: 'كود الصنف مطلوب',
+            field: 'itemCode'
+        })
+
+        if(!Number.isInteger(itemCode.code)) return response.status(406).json({
+            accepted: false,
+            message: 'كود الصنف يجب ان يكون رقم',
+            field: 'itemCode'
+        })
+
+        const itemsCodes = await itemModel.getItemByCode(itemCode.code)
+
+        if(itemCode.isNew) {
+            if(itemsCodes.length != 0) return response.status(406).json({
+                accepted: false,
+                message: 'هذا الكود مسجل مسبقا',
+                field: 'itemCode'
+            })
+
+        } else {
+
+            if(itemsCodes.length == 0 || (itemsCodes.length == 1 && itemsCodes[0].id != itemId)) return response.status(406).json({
+                accepted: false,
+                message: 'هذا ليس كود الصنف الغير معدل',
+                field: 'itemCode'
+            })
+        }
+
+        const updateItem = await itemModel.updateItemById(itemId, itemName.name, itemCode.code)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تم تعديل الصنف بنجاح'
+        })
+
+
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 module.exports = { 
     getItems,
     addItem,
     getItem,
     getItemAveragePrice,
-    getItemCard
+    getItemCard,
+    updateItem
 }
