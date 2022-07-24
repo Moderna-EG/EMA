@@ -27,7 +27,7 @@ class User {
     async getUsersByRole(role) {
         
         const pool = await dbConnect()
-        const query = `SELECT ID, name, email, phone, role, registrationDate FROM users WHERE role=$1`
+        const query = `SELECT ID, name, email, phone, role, isWorking, registrationDate FROM users WHERE role=$1`
         const client = await pool.connect()
         const result = await client.query(query, [role])
         client.release()
