@@ -13,14 +13,25 @@ const addUser = async (request, response) => {
         if(!name) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user name is required'
+                message: 'اسم الموظف مطلوب',
+                field: 'name'
             })
         }
 
         if(!email) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user email is required'
+                message: 'بريد الموظف مطلوب',
+                field: 'email'
+            })
+        }
+
+        if(!isEmailValid(email)) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'هذا البريد غير صالح',
+                field: 'email'
             })
         }
 
@@ -29,21 +40,40 @@ const addUser = async (request, response) => {
         if(similarEmails.length != 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user email is already registered'
+                message: 'هذا البريد مسجل مسبقا',
+                field: 'email'
             })
         }
 
         if(!password) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user email is required'
+                message: 'كلمة المرور مطلوبة',
+                field: 'password'
             })
         }
 
         if(!phone) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user phone is required'
+                message: 'هاتف الموظف مطلوب',
+                field: 'phone'
+            })
+        }
+
+        if(phone.length != 11) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'مطلوب 11 رقم',
+                field: 'phone'
+            })
+        }
+
+        if(!isPhoneValid(phone)) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'رقم غير صالح',
+                field: 'phone'
             })
         }
 
@@ -52,21 +82,24 @@ const addUser = async (request, response) => {
         if(similarPhons.length != 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user phone is already registered'
+                message: 'هذا الرقم مسجل مسبقا',
+                field: 'phone'
             })
         }
 
         if(!role) {
             return response.status(406).json({
                 accepted: false,
-                message: 'user role is required'
+                message: 'الدور مطلوب',
+                field: 'role'
             })
         }
 
         if(!isUserRoleValid(role)) {
             return response.status(406).json({
                 accepted: false,
-                message: 'invalid user role'
+                message: 'هذا الدور غير صالح',
+                field: 'role'
             })
         }
 
@@ -74,7 +107,7 @@ const addUser = async (request, response) => {
 
         return response.status(200).json({
             accepted: true,
-            message: 'user added successfully'
+            message: 'تم الاضافة بنجاح',
         })
 
 
