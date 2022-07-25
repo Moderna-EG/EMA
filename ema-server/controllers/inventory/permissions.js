@@ -541,6 +541,54 @@ const getClientPermissions = async (request, response) => {
     }
 }
 
+const deleteReceivePermissionAndPermissionsAfter = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const deletePermissionItems = await receivePermissionItemModel.deleteReceivePermissionsItemsAndAfterById(permissionId)
+
+        const deletePermission = await receivePermissionModel.deleteReceivePermissionAndAfterById(permissionId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const deleteExchangePermissionAndPermissionsAfter = async (request, response) => {
+
+    try {
+
+        const { permissionId } = request.params
+
+        const deletePermissionItems = await exchangePermissionItemModel.deleteExchangePermissionsItemsAndAfterById(permissionId)
+
+        const deletePermission = await exchangePermissionModel.deleteExchangePermissionAndAfterById(permissionId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 
 
 module.exports = {
@@ -555,5 +603,7 @@ module.exports = {
     updateReceivePermissionProvider,
     updateExchangePermissionClient,
     getProviderPermissions,
-    getClientPermissions
+    getClientPermissions,
+    deleteReceivePermissionAndPermissionsAfter,
+    deleteExchangePermissionAndPermissionsAfter
  }

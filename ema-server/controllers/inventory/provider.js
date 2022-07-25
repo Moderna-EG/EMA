@@ -284,5 +284,37 @@ const updateProvider = async (request, response) => {
     }
 }
 
+const deleteProvider = async (request, response) => {
 
-module.exports = { addProvider, getProviders, updateProvider }
+    try {
+
+        const { providerId } = request.params
+
+        const providersList = await receivePermissionModel.getReceivePermissionsByProvider(providerId)
+        
+        if(providersList.length != 0) {
+            
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يمكن ازالة المورد لوجود معاملات مسجلة به'
+            })
+        }
+
+        const deleteProvider = await providerModel.deleteProvider(providerId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+
+module.exports = { addProvider, getProviders, updateProvider, deleteProvider }

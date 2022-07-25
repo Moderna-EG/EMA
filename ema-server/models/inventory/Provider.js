@@ -69,6 +69,17 @@ class Provider {
         return true
     }
 
+    async deleteProvider(providerId) {
+
+        const pool = await dbConnect()
+        const query = `DELETE FROM providers WHERE Id = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [providerId])
+        client.release()
+
+        return true
+    }
+
 }
 
 module.exports = new Provider()

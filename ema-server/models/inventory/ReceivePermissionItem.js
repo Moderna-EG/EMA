@@ -183,6 +183,22 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+    async deleteReceivePermissionsItemsAndAfterById(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            DELETE FROM ReceivePermissionsItems
+            WHERE
+            PermissionId >= $1            
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return result.rows
+
+    }
+
 
 
 

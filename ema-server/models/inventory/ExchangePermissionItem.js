@@ -73,6 +73,22 @@ class ExchangePermissionItem {
         return result.rows
     }
 
+    async deleteExchangePermissionsItemsAndAfterById(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            DELETE FROM ExchangePermissionsItems
+            WHERE
+            PermissionId >= $1            
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return result.rows
+
+    }
+
     
 
 }

@@ -68,6 +68,17 @@ class Client {
         return true
     }
 
+    async deleteClient(clientId) {
+
+        const pool = await dbConnect()
+        const query = `DELETE FROM clients WHERE Id = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [clientId])
+        client.release()
+
+        return true
+    }
+
 
 }
 

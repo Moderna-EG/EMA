@@ -1,4 +1,5 @@
 const clientModel = require('../../models/inventory/Client')
+const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
 
 const addClient = async (request, response) => {
 
@@ -177,4 +178,36 @@ const updateClient = async (request, response) => {
     }
 }
 
-module.exports = { addClient, getClients, updateClient }
+const deleteClient = async (request, response) => {
+
+    try {
+
+        const { clientId } = request.params
+
+        const clientsList = await exchangePermissionModel.getExchangePermissionsByClient(clientId)
+        
+        if(clientsList.length != 0) {
+            
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يمكن ازالة العميل لوجود معاملات مسجلة به'
+            })
+        }
+
+        const deleteClient = await clientModel.deleteClient(clientId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+module.exports = { addClient, getClients, updateClient, deleteClient }

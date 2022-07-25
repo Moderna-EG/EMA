@@ -7,4 +7,6 @@ router.post('/clients', (request, response) => clientController.addClient(reques
 
 router.put('/clients/:clientId', (request, response) => clientController.updateClient(request, response))
 
+router.delete('/clients/:clientId', (request, response) => clientController.deleteClient(request, response))
+
 module.exports = router
