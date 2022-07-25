@@ -79,6 +79,17 @@ class Item {
 
         return true
     }
+
+    async deleteItem(itemId) {
+
+        const pool = await dbConnect()
+        const query = `DELETE FROM items WHERE Id = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId])
+        client.release()
+
+        return true
+    }
 }
 
 module.exports = new Item()

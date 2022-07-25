@@ -14,4 +14,6 @@ router.get('/items/:itemId/item-card', (request, response) => itemController.get
 
 router.put('/items/:itemId', (request, response) => itemController.updateItem(request, response))
 
+router.delete('/items/:itemId', (request, response) => itemController.deleteItem(request, response))
+
 module.exports = router

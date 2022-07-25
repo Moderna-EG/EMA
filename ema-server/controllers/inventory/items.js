@@ -332,11 +332,46 @@ const updateItem = async (request, response) => {
     }
 }
 
+const deleteItem = async (request, response) => {
+
+    try {
+
+        const { itemId } = request.params
+
+        const [itemReceivePermissions, itemExchangePermissions] = await Promise.all([
+            receivePermissionItemModel.getReceivePermissionOfItem(itemId),
+            exchangePermissionItemModel.getExchangePermissionOfItem(itemId)
+        ])
+
+        if(itemReceivePermissions.length != 0 || itemExchangePermissions.length != 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يمكن ازالة الصنف لوجود معاملات مسجلة به'
+            })
+        }
+
+        const deleteItem = await itemModel.deleteItem(itemId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 module.exports = { 
     getItems,
     addItem,
     getItem,
     getItemAveragePrice,
     getItemCard,
-    updateItem
+    updateItem,
+    deleteItem
 }
