@@ -15,4 +15,6 @@ router.patch('/users/employees/:employeeId/block', (request, response) => usersC
 
 router.patch('/users/employees/:employeeId/enable', (request, response) => usersController.enableEmployee(request, response))
 
+router.delete('/users/employees/:employeeId', (request, response) => usersController.deleteEmployee(request, response))
+
 module.exports = router

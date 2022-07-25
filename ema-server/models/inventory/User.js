@@ -113,6 +113,17 @@ class User {
 
         return true
     }
+
+    async deleteUser(userId) {
+
+        const pool = await dbConnect()
+        const query = `DELETE FROM users WHERE Id = $1`
+        const client = await pool.connect()
+        const result = await client.query(query, [userId])
+        client.release()
+
+        return true
+    }
 }
 
 module.exports = new User()

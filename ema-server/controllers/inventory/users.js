@@ -1,4 +1,6 @@
 const usersModel = require('../../models/inventory/User')
+const receivePermissionModel = require('../../models/inventory/ReceivePermission')
+const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
 const { isUserRoleValid } = require('../../utils/validUserRole')
 const { isEmailValid } = require('../../utils/validateEmail')
 const { isPhoneValid } = require('../../utils/validatePhone')
@@ -342,6 +344,40 @@ const enableEmployee = async (request, response) => {
     }
 }
 
+const deleteEmployee = async (request, response) => {
+
+    try {
+
+        const { employeeId } = request.params
+
+        const [receivePermissions, exchangePermissions] = await Promise.all([
+            receivePermissionModel.getReceivePermissionsByUser(employeeId),
+            exchangePermissionModel.getExchangePermissionsByUser(employeeId)
+        ])
+
+        if(receivePermissions.length != 0 || exchangePermissions.length != 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يمكن ازالة الموظف لوجود معاملات مسجلة به'
+            })
+        }
+
+        const deleteUser = await usersModel.deleteUser(employeeId)
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 
 module.exports = { 
     addUser, 
@@ -350,5 +386,6 @@ module.exports = {
     getAdmins, 
     updateEmployee,
     blockEmployee,
-    enableEmployee
+    enableEmployee,
+    deleteEmployee
  }
