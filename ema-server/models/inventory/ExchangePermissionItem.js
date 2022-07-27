@@ -73,16 +73,51 @@ class ExchangePermissionItem {
         return result.rows
     }
 
-    async deleteExchangePermissionsItemsAndAfterById(permissionId) {
+    async getItemQuantityByDatetime(itemId, datetime) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT SUM(quantity)
+            FROM ExchangePermissionsItems
+            INNER JOIN ExchangePermissions ON ExchangePermissions.ID = ExchangePermissionsItems.PermissionId
+            WHERE ItemID = $1 AND ExchangePermissions.PermissionDate <= $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, datetime])
+        client.release()
+
+        return result.rows
+    }
+
+    async deleteExchangePermissionsItemsByPermissionIds(placeholders, permissionsList) {
 
         const pool = await dbConnect()
         const query = `
             DELETE FROM ExchangePermissionsItems
             WHERE
-            PermissionId >= $1            
+            permissionId IN (${placeholders})
+                       
         `
         const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
+        const result = await client.query(query, permissionsList)
+        client.release()
+
+        return result.rows
+
+    }
+
+    async getExchangePermissionsItemsPermissionAndAfterByDatetime(permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT  *
+            FROM ExchangePermissionsItems
+            INNER JOIN ExchangePermissions ON ExchangePermissions.Id = ExchangePermissionsItems.permissionId
+            WHERE
+            ExchangePermissions.permissionDate >= $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate])
         client.release()
 
         return result.rows

@@ -28,9 +28,8 @@ router.get('/receive-permissions/providers/:providerId', (request, response) => 
 
 router.get('/exchange-permissions/clients/:clientId', (request, response) => permissionController.getClientPermissions(request, response))
 
-router.delete('/receive-permissions/:permissionId/after', (request, response) => permissionController.deleteReceivePermissionAndPermissionsAfter(request, response))
+router.delete('/permissions/:permissionId/:permissionType', (request, response) => permissionController.deletePermissiosAndUpdateItems(request, response))
 
-router.delete('/exchange-permissions/:permissionId/after', (request, response) => permissionController.deleteExchangePermissionAndPermissionsAfter(request, response))
 
 
 module.exports = router

@@ -151,16 +151,16 @@ class ReceivePermission {
         return true
     }
 
-    async deleteReceivePermissionAndAfterById(permissionId) {
+    async deleteReceivePermissionsByIds(placeholders, permissionsList) {
 
         const pool = await dbConnect()
         const query = `
             DELETE FROM ReceivePermissions
             where
-            Id >= $1
+            Id IN (${placeholders})
         `
         const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
+        const result = await client.query(query, permissionsList)
         client.release()
 
         return true

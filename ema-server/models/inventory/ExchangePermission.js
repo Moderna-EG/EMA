@@ -164,16 +164,16 @@ class ExchangePermission {
         return true
     }
 
-    async deleteExchangePermissionAndAfterById(permissionId) {
+    async deleteExchangePermissionsByIds(placeholders, permissionsList) {
 
         const pool = await dbConnect()
         const query = `
             DELETE FROM ExchangePermissions
             where
-            Id >= $1
+            Id IN (${placeholders})
         `
         const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
+        const result = await client.query(query, permissionsList)
         client.release()
 
         return true

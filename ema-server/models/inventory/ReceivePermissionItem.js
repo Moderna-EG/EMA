@@ -1,4 +1,5 @@
 const dbConnect = require('../../config/db')
+const { getReceivePermissions } = require('./ReceivePermission')
 
 class ReceivePermissionItem {
     
@@ -23,7 +24,7 @@ class ReceivePermissionItem {
             ReceivePermissionsItems.Id, ReceivePermissionsItems.quantity,
             ReceivePermissionsItems.price, ReceivePermissionsItems.bookValue,
             ReceivePermissionsItems.permissionId,
-            items.name, items.code
+            items.name, items.code, items.id AS ItemId
             FROM ReceivePermissionsItems
             INNER JOIN items ON items.ID = ReceivePermissionsItems.itemId
             WHERE ReceivePermissionsItems.PermissionId = $1
@@ -121,6 +122,22 @@ class ReceivePermissionItem {
         return result.rows
     }
 
+    async getItemQuantityByDatetime(itemId, datetime) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT SUM(quantity)
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
+            WHERE ItemID = $1 AND ReceivePermissions.PermissionDate <= $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, datetime])
+        client.release()
+
+        return result.rows
+    }
+
     async getAveragePriceOfItem(itemId) {
 
         const pool = await dbConnect()
@@ -183,16 +200,35 @@ class ReceivePermissionItem {
         return result.rows
     }
 
-    async deleteReceivePermissionsItemsAndAfterById(permissionId) {
+    async deleteReceivePermissionsItemsByPermissionsIds(placeholders, permissionsList) {
 
         const pool = await dbConnect()
         const query = `
             DELETE FROM ReceivePermissionsItems
             WHERE
-            PermissionId >= $1            
+            permissionId IN (${placeholders})
+                       
         `
         const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
+        const result = await client.query(query, permissionsList)
+        client.release()
+
+        return result.rows
+
+    }
+
+    async getReceivePermissionsItemsPermissionAndAfterByDatetime(permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT  *
+            FROM ReceivePermissionsItems
+            INNER JOIN ReceivePermissions ON ReceivePermissions.Id = ReceivePermissionsItems.permissionId
+            WHERE
+            ReceivePermissions.permissionDate >= $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate])
         client.release()
 
         return result.rows

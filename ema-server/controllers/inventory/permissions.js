@@ -9,6 +9,93 @@ const clientModel = require('../../models/inventory/Client')
 const ExchangePermissionItem = require('../../models/inventory/ExchangePermissionItem')
 
 
+const extractItemsIds = (permissions) => {
+
+    let Ids = []
+
+    for(let i=0;i<permissions.length;i++) {
+        Ids.push(permissions[i].itemid)
+    }
+
+    return Ids
+}
+
+const extractPermissionsIds = (permissions) => {
+
+    let Ids = []
+
+    for(let i=0;i<permissions.length;i++) {
+        Ids.push(permissions[i].permissionid)
+    }
+
+    return Ids
+}
+
+const createDBPlaceholders = (list) => {
+
+    let placeholders = ''
+
+    for(let i=1;i<=list.length;i++) {
+
+        if(i == list.length) {
+            placeholders += `$${i}`
+            break
+        }
+
+        placeholders += `$${i}, `
+    }
+
+    return placeholders
+}
+
+const calculateItemsNewQuantityWithDate = async (itemsIds, date) => {
+
+    for(let i=0;i<itemsIds.length;i++) {
+
+        let itemId = itemsIds[i]
+
+        const [receivedQuantity, exchangedQuantity] = await Promise.all([
+            receivePermissionItemModel.getItemQuantityByDatetime(itemId, date),
+            exchangePermissionItemModel.getItemQuantityByDatetime(itemId, date)
+        ])
+
+        let ITEM_RECEIVED_QUANTITY = Number.parseInt(receivedQuantity[0].sum)
+        let ITEM_EXCHANGED_QUANTITY = Number.parseInt(exchangedQuantity[0].sum)
+
+        if(!ITEM_RECEIVED_QUANTITY) ITEM_RECEIVED_QUANTITY = 0
+        if(!ITEM_EXCHANGED_QUANTITY) ITEM_EXCHANGED_QUANTITY = 0
+
+        const CURRENT_QUANTITY = ITEM_RECEIVED_QUANTITY - ITEM_EXCHANGED_QUANTITY
+
+        const updateItem = await itemModel.updateItemQuantityById(itemId, CURRENT_QUANTITY)
+    }
+}
+
+const removeDuplicates = (Ids) => {
+
+    let unqiue = []
+
+    for(let i=0;i<Ids.length;i++) {
+
+        let found = false
+
+        for(let j=0;j<unqiue.length;j++) {
+
+            if(Ids[i] == unqiue[j]) {
+                found = true
+            }
+
+        }
+
+        if(!found) {
+            unqiue.push(Ids[i])
+        }
+    }
+
+    return unqiue
+}
+ 
+
 const calculateItemsTotalPrice = (items) => {
 
     let total = 0
@@ -541,15 +628,105 @@ const getClientPermissions = async (request, response) => {
     }
 }
 
-const deleteReceivePermissionAndPermissionsAfter = async (request, response) => {
+const deletePermissiosAndUpdateItems = async (request, response) => {
 
     try {
 
-        const { permissionId } = request.params
+        const { permissionType, permissionId } = request.params
 
-        const deletePermissionItems = await receivePermissionItemModel.deleteReceivePermissionsItemsAndAfterById(permissionId)
+        let permissionList
 
-        const deletePermission = await receivePermissionModel.deleteReceivePermissionAndAfterById(permissionId)
+        if(permissionType == 'receive') {
+
+            permissionList = await receivePermissionModel.getReceivePermission(permissionId)
+
+        } else if(permissionType == 'exchange') {
+
+            permissionList = await exchangePermissionModel.getExchangePermission(permissionId)
+
+        } else {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'invalid permission type'
+            })
+        }
+        
+        if(permissionList.length == 0) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يوجد اذن بهذا الرقم'
+            })
+        }
+
+        const permission = permissionList[0]
+
+
+        let [itemsReceivePermisisonList, itemsExchangePermisisonList] = await Promise.all([
+            receivePermissionItemModel
+            .getReceivePermissionsItemsPermissionAndAfterByDatetime(permission.permissiondate),
+
+            exchangePermissionItemModel
+            .getExchangePermissionsItemsPermissionAndAfterByDatetime(permission.permissiondate)
+        ])
+
+        //console.log({ itemsReceivePermisisonList, itemsExchangePermisisonList })
+
+
+        itemsReceivePermisisonList = itemsReceivePermisisonList.map(permission => {
+            permission.type = 'receive'
+            return permission
+        })
+
+        itemsExchangePermisisonList = itemsExchangePermisisonList.map(permission => {
+            permission.type = 'exchange'
+            return permission
+        })
+
+        const permissions = [...itemsReceivePermisisonList, ...itemsExchangePermisisonList]
+
+        const itemsIds = extractItemsIds(permissions)
+        const receivePermissionsIds = extractPermissionsIds(itemsReceivePermisisonList)
+        const exchangePermissionsIds = extractPermissionsIds(itemsExchangePermisisonList)
+
+        //console.log({ receivePermissionsIds, exchangePermissionsIds })
+
+        if(permissionType == 'receive') receivePermissionsIds.push(permission.permissionid)
+
+        if(permissionType == 'exchange') exchangePermissionsIds.push(permission.permissionid)
+
+        const unqiueItemsIds = removeDuplicates(itemsIds)
+        const unqiueReceivePermissionsIds = removeDuplicates(receivePermissionsIds)
+        const uniqueExchangePermissionsIds = removeDuplicates(exchangePermissionsIds)
+
+
+        const receivePermissionsPlaceholders = createDBPlaceholders(unqiueReceivePermissionsIds)
+        const exchangePermissionsPlaceholders = createDBPlaceholders(uniqueExchangePermissionsIds)
+
+        //console.log({ unqiueReceivePermissionsIds, uniqueExchangePermissionsIds })
+
+
+        calculateItemsNewQuantityWithDate(unqiueItemsIds, permission.permissiondate)
+
+        if(unqiueReceivePermissionsIds.length != 0) {
+
+            const deleteReceivePermissionsItems = await receivePermissionItemModel
+            .deleteReceivePermissionsItemsByPermissionsIds(receivePermissionsPlaceholders, unqiueReceivePermissionsIds)
+            
+            const deleteReceivePermissions = await receivePermissionModel
+            .deleteReceivePermissionsByIds(receivePermissionsPlaceholders, unqiueReceivePermissionsIds)
+        
+        }
+
+        if(uniqueExchangePermissionsIds.length != 0) {
+
+            const deleteExchangePermissionsItems = await exchangePermissionItemModel
+            .deleteExchangePermissionsItemsByPermissionIds(exchangePermissionsPlaceholders, uniqueExchangePermissionsIds)
+
+            const deleteExchangePermissions = await exchangePermissionModel
+            .deleteExchangePermissionsByIds(exchangePermissionsPlaceholders, uniqueExchangePermissionsIds)
+        }
+        
 
         return response.status(200).json({
             accepted: true,
@@ -604,6 +781,5 @@ module.exports = {
     updateExchangePermissionClient,
     getProviderPermissions,
     getClientPermissions,
-    deleteReceivePermissionAndPermissionsAfter,
-    deleteExchangePermissionAndPermissionsAfter
+    deletePermissiosAndUpdateItems
  }
