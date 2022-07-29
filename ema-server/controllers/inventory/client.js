@@ -10,28 +10,32 @@ const addClient = async (request, response) => {
         if(!name) {
             return response.status(406).json({
                 accepted: false,
-                message: 'client name is required'
+                message: 'اسم العميل مطلوب',
+                field: 'name'
             })
         }
 
         if(!description) {
             return response.status(406).json({
                 accepted: false,
-                message: 'client description is required'
+                message: 'وصف العميل مطلوب',
+                field: 'description'
             })
         }
 
         if(!code) {
             return response.status(406).json({
                 accepted: false,
-                message: 'client code is required'
+                message: 'كود العميل مطلوب',
+                field: 'code'
             })
         }
 
         if(!Number.isInteger(code)) {
             return response.status(406).json({
                 accepted: false,
-                message: 'invalid client code'
+                message: 'كود غير صالح',
+                field: 'code'
             })
         }
 
@@ -40,14 +44,16 @@ const addClient = async (request, response) => {
         if(similarCodes.length != 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'this code is already registered'
+                message: 'كود عميل اخر',
+                field: 'code'
             })
         }
 
         if(!operationDate instanceof Date) {
             return response.status(406).json({
                 accepted: false,
-                message: 'client operation date is required'
+                message: 'تاريخ العمل مع العميل مطلوب',
+                field: 'operationDate'
             })
         }
 
@@ -55,7 +61,7 @@ const addClient = async (request, response) => {
 
         return response.status(200).json({
             accepted: true,
-            message: 'client added successfully'
+            message: 'client added successfully',
         })
          
     } catch(error) {
