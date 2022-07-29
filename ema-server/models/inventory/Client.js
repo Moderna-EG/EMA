@@ -57,12 +57,12 @@ class Client {
         return result.rows
     }
 
-    async updateClientById(clientId, clientName, clientCode, clientDescription) {
+    async updateClientById(clientId, clientName, clientCode, clientDescription, clientOperationDate) {
 
         const pool = await dbConnect()
-        const query = `UPDATE clients SET name=$2, code=$3, description=$4 WHERE ID = $1`
+        const query = `UPDATE clients SET name=$2, code=$3, description=$4, OperationDate=$5 WHERE ID = $1`
         const client = await pool.connect()
-        const result = await client.query(query, [clientId, clientName, clientCode, clientDescription])
+        const result = await client.query(query, [clientId, clientName, clientCode, clientDescription, clientOperationDate])
         client.release()
 
         return true

@@ -99,7 +99,7 @@ const updateClient = async (request, response) => {
 
         const { clientId } = request.params
 
-        const { clientName, clientCode, clientDescription } = request.body
+        const { clientName, clientCode, clientDescription, clientOperationDate } = request.body
 
         if(!clientName || !clientName.name) return response.status(406).json({
             accepted: false,
@@ -163,11 +163,20 @@ const updateClient = async (request, response) => {
             field: 'clientDescription'
         })
 
+        if(!clientOperationDate || !clientOperationDate.operationDate) return response.status(406).json({
+
+            accepted: false,
+            message: 'تاريخ العمل مع العميل',
+            field: 'clientOperationDate'
+        })
+
+        
         const updateClient = await clientModel.updateClientById(
             clientId,
             clientName.name,
             clientCode.code,
-            clientDescription.description
+            clientDescription.description,
+            clientOperationDate.operationDate
         )
 
         return response.status(200).json({
