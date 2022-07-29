@@ -166,7 +166,7 @@ const updateClient = async (request, response) => {
         if(!clientOperationDate || !clientOperationDate.operationDate) return response.status(406).json({
 
             accepted: false,
-            message: 'تاريخ العمل مع العميل',
+            message: 'تاريخ العمل مع العميل مطلوب',
             field: 'clientOperationDate'
         })
 
