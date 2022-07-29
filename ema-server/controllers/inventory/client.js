@@ -57,7 +57,7 @@ const addClient = async (request, response) => {
             })
         }
 
-        const client = await clientModel.addClient(name, description, code, operationDate)
+        const client = await clientModel.addClient(name, description, code, new Date(operationDate))
 
         return response.status(200).json({
             accepted: true,
@@ -169,6 +169,8 @@ const updateClient = async (request, response) => {
             message: 'تاريخ العمل مع العميل مطلوب',
             field: 'clientOperationDate'
         })
+
+        clientOperationDate.operationDate = new Date(clientOperationDate.operationDate)
 
         
         const updateClient = await clientModel.updateClientById(
