@@ -29,7 +29,7 @@ const ExchangePermissionCart = () => {
 
         userRequest.post('/inventory/exchange-permissions', permissionData)
         .then(response => {
-            navigate('/inventory/exchange-permission/view')
+            navigate(`/inventory/exchange-permissions/${response.data.permissionId}`)
         })
         .catch(error => console.error((error)))
     }
@@ -87,11 +87,7 @@ const ExchangePermissionCart = () => {
         }}
         columns={columns} 
         data={items}
-        editable={{
-            onRowUpdate: async (newData, oldData) => {
-                updateItem(newData, oldData)
-            },
-        }}
+        
         actions={[
             {
                 icon: TableIcons.Confirm,

@@ -27,9 +27,10 @@ const ReceivePermissionCart = () => {
             items: items
         }
 
+
         userRequest.post('/inventory/receive-permissions', permissionData)
         .then(response => {
-            navigate('/inventory/receive-permission/view')
+            navigate(`/inventory/receive-permissions/${response.data.permissionId}`)
         })
         .catch(error => console.error((error)))
     }

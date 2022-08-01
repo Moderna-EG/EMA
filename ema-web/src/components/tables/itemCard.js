@@ -5,28 +5,13 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import BlockIcon from '@mui/icons-material/Block'
 import { userRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
+import UpdateMessage from '../update-message/update-message'
 
-const ItemCardTable = () => {
+
+const ItemCardTable = ({ permissions, loading, setLoadingTrue, setLoadigFalse, errorMessage }) => {
 
     const navigate = useNavigate()
-
-
-    const [permissions, setPermissions] = useState([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-
-        const itemId = window.location.pathname.split('/')[3]
-
-        userRequest.get(`inventory/items/${itemId}/item-card`)
-        .then(response => {
-            
-            setPermissions(formateData(response.data.permissions))
-
-            setLoading(false)
-        })
-        .catch(error => console.error(error))
-    } , [loading])
+    
 
     const formateData = (permissions) => {
 
@@ -64,7 +49,7 @@ const ItemCardTable = () => {
 
         const newDate = new Date(permissionDate)
 
-        return `${newDate.getDate()}-${newDate.getMonth() + 1}-${newDate.getFullYear()}`
+        return `${newDate.getMonth() + 1}-${newDate.getDate()}-${newDate.getFullYear()}`
     }
 
 
@@ -89,6 +74,14 @@ const ItemCardTable = () => {
     ]
     
     return (<div>
+
+        { errorMessage ? 
+        <div>
+            <UpdateMessage message={errorMessage} />
+        </div>
+        :
+        ''    
+        }
         <MaterialTable 
         title="" 
         isLoading={loading}
@@ -103,13 +96,7 @@ const ItemCardTable = () => {
                 icon: TableIcons.Refresh,
                 tooltip: 'تحديث',
                 isFreeAction: true,
-                onClick: () => setLoading(true)
-            },
-            {
-                icon: TableIcons.Item,
-                tooltip: 'الاصناف',
-                isFreeAction: true,
-                onClick: () => navigate('/inventory/items')
+                onClick: () => setLoadingTrue()
             }
         ]}
         icons={TableIcons} />

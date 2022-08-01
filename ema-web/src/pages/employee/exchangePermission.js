@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/EmployeeSidebar'
+import Sidebar from '../../components/sidebar/SideBar'
 import './employee.css'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import ExchangePermissionTable from '../../components/tables/exchangePermission'
 import { userRequest } from '../../api/requests'
 import ExchangePermissionInvoice from '../../components/printComponent/printExchangePermissionInvoice'
+import { useNavigate } from 'react-router-dom'
 
 
 const ReceivePermission = () => {
 
+    const navigate = useNavigate()
+    const [authorized, setAuthorized] = useState(false)
     const [permission, setPermission] = useState()
     const [permissionItems, setPermissionItems] = useState([])
     const [loading, setLoading] = useState(true)
@@ -31,12 +34,17 @@ const ReceivePermission = () => {
         .catch(error => console.error(error))
     }, [])
 
+
+
     return (
-        <div>
+        <>
+        {
+            authorized
+            ?
+            <div>
             <Navbar />
             <div className="employee-main">
                 <div className="employee-wrapper">
-                    <SideMenuIcons />
                     { !loading ? <ExchangePermissionInvoice items={permissionItems} permission={permission}/> : '' }
                     <ExchangePermissionTable items={permissionItems} loading={loading} />
                     
@@ -46,6 +54,10 @@ const ReceivePermission = () => {
                 </div>
             </div>
         </div>
+        :
+        ''
+        }
+        </>
     )
 }
 export default ReceivePermission

@@ -15,11 +15,11 @@ const sendResetMail = async (receiverMail, receiverName, receiverToken) => {
       let mailOptions = {
         from: config.USER_MAIL,
         to: receiverMail,
-        subject: 'Password Reset',
+        subject: 'تغيير كلمة المرور',
         html: `
-        <div>
-            <p>Hi ${receiverName},</p>
-            <p>To reset your password please click <a href=${config.HOST_URL}/reset-password/${receiverToken}>Here</a></p>
+        <div style="text-align: right;">
+            <p>السيد ${receiverName}</p>
+            <p>لتغيير كلمة المرور اضغط <a href=${config.HOST_URL}/reset-password/${receiverToken}>هنا</a></p>
         </div>
         `
       }
@@ -28,8 +28,6 @@ const sendResetMail = async (receiverMail, receiverName, receiverToken) => {
       try {
 
         const mail = await transporter.sendMail(mailOptions)
-
-        console.log(mail)
 
         return true
 

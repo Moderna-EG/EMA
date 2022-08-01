@@ -160,7 +160,7 @@ class ReceivePermissionItem {
             SELECT AVG(price)
             FROM ReceivePermissionsItems
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
-            WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
+            WHERE ItemId = $1 AND ReceivePermissions.PermissionDate <= $2
         `
         const client = await pool.connect()
         const result = await client.query(query, [itemId, date])
@@ -233,6 +233,23 @@ class ReceivePermissionItem {
 
         return result.rows
 
+    }
+
+    async getItemsByPermissionsIds(placeholders, permissionsList) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            *
+            FROM ReceivePermissionsItems
+            WHERE
+            PermissionId IN (${placeholders})
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, permissionsList)
+        client.release()
+
+        return result.rows
     }
 
 

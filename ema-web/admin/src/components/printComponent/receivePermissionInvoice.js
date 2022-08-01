@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import './table.css'
 
 class ReceivePermissionInvoice extends React.Component {

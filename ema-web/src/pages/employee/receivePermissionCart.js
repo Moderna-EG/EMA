@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/EmployeeSidebar'
-import ReceivePermissionForm from '../../components/forms/ReceivePermission'
+import Sidebar from '../../components/sidebar/SideBar'
 import './employee.css'
-import SuccessModal from '../../components/modal/success'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import ReceivePermissionCartTable from '../../components/tables/receivePermissionCart'
-import { userRequest } from '../../api/requests'
+import { useNavigate } from 'react-router-dom'
 
 const ReceivePermissionCart = () => {
 
+    const navigate = useNavigate()
+    const [authorized, setAuthorized] = useState(false)
+
+    useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user'))
+
+        if(!user) {
+            setAuthorized(false)
+            navigate('/login')
+            return
+        }
+
+        setAuthorized(true)
+
+    }, [authorized])
 
     return (
-        <div>
+        <>
+        {
+            authorized
+            ?
+            <div>
             <Navbar />
             <div className="employee-main">
                 <div className="employee-wrapper">
-                    <SideMenuIcons />
                     <ReceivePermissionCartTable />
                 </div>
                 <div>
@@ -24,6 +41,10 @@ const ReceivePermissionCart = () => {
                 </div>
             </div>
         </div>
+        :
+        ''
+        }
+        </>
     )
 }
 export default ReceivePermissionCart

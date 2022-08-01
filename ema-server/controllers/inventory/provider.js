@@ -114,7 +114,7 @@ const addProvider = async (request, response) => {
 
         return response.status(200).json({
             accepted: true,
-            message: 'provider added successfully'
+            message: 'تم اضافة مورد بنجاح'
         })
 
     } catch(error) {

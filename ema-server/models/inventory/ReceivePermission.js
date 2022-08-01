@@ -166,6 +166,23 @@ class ReceivePermission {
         return true
     }
 
+    async getReceivePermissionsAndAfterByDatetime(permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT  *
+            FROM ReceivePermissions
+            WHERE
+            permissionDate >= $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate])
+        client.release()
+
+        return result.rows
+
+    }
+
     
 
 }

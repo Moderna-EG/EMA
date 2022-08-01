@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './modal.css'
 import { userRequest } from '../../api/requests'
 import SuccessModal from './success'
-import { ThreeDots } from 'react-loader-spinner'
+import { TailSpin } from 'react-loader-spinner'
 
 const ItemModal = ({ modal }) => {
 
@@ -78,7 +78,7 @@ const ItemModal = ({ modal }) => {
                 <div className="modal-footer">
                     <button className="cancel" onClick={modal}>الغاء</button>  
                     <button className="submit" onClick={submitItem}>
-                        { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل'}    
+                        { loading ? <TailSpin color="white" height={20} width={20} /> : 'تسجيل'}    
                     </button>     
                 </div>
             </div>

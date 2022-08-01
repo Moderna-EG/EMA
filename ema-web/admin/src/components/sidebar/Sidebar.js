@@ -3,37 +3,38 @@ import './sidebar.css'
 import AddBusinessIcon from '@mui/icons-material/AddBusiness'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
-import EngineeringIcon from '@mui/icons-material/Engineering'
-import DomainIcon from '@mui/icons-material/Domain'
-import TodayIcon from '@mui/icons-material/Today'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { Link, NavLink } from 'react-router-dom'
+import NewspaperIcon from '@mui/icons-material/Newspaper'
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard'
 
 const Sidebar = () => {
     return (
-        <div className="sidebar-icons">
+        <div className="sidebar-icons employee-side-bar">
             <ul>
                 <li>
-                    <ContentPasteIcon />
-                    <span>اصناف</span>   
+                    <NavLink to="/inventory/items">
+                        <ContentPasteIcon />
+                        <span>اصناف</span> 
+                    </NavLink> 
                 </li>
                 <li>
-                    <TodayIcon />
-                    <span>نشاط المخزن</span>
+                    <NavLink to="/inventory/receive-permissions">
+                        <AddBusinessIcon />
+                        <span> استلام</span>
+                    </NavLink>
                 </li>
                 <li>
-                    <AddBusinessIcon />
-                    <span>الوارد</span>
+                    <NavLink to="/inventory/exchange-permissions">
+                        <LocalShippingIcon />
+                        <span>  صرف</span>
+                    </NavLink>
                 </li>
-                <li>
-                    <LocalShippingIcon />
-                    <span>المنصرف</span>
-                </li>
-                <li>
-                <EngineeringIcon />
-                    <span>الموردين</span>
-                </li>
-                <li>
-                    <DomainIcon />
-                    <span>المحاجر</span>
+                <li className="logout">
+                    <NavLink to="/login">
+                        <LogoutIcon />
+                        <span>خروج</span>
+                    </NavLink>
                 </li>
             </ul>
         </div>

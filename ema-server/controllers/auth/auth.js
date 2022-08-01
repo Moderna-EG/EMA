@@ -82,13 +82,20 @@ const sendForgetPasswordMail = async (request, response) => {
 
         const userData = jwt.sign({ user }, config.SECRET_KEY, { expiresIn: '1h' })
 
-        console.log(user)
-
         const isSent = await sendResetMail(user.email, user.name, userData)
+
+        if(!isSent) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'هناك مشكلة في ذالك البريد',
+                field: 'gmail'
+            })
+        }
+
 
         return response.status(200).json({
             accepted: true,
-            message: 'تم ارسال البريد '
+            message: 'تم ارسال البريد ',
         })
 
     } catch(error) {
@@ -104,7 +111,7 @@ const updatePassword = async (request, response) => {
 
     try {
 
-        const { userId } = request.params
+        const { token } = request.params
 
         const { newPassword } = request.body
 
@@ -113,16 +120,24 @@ const updatePassword = async (request, response) => {
             message: 'كلمة المرور مطلوبة',
             field: 'newPassword'
         })
-
-        //const hashedPassword = bcrypt.hashSync(newPassword, config.SALT_ROUNDS)
-
-        //console.log(hashedPassword)
-
-        const updatePassword = await userModel.updatePassword(userId, newPassword)
         
-        return response.status(200).json({
-            accepted: true,
-            message: 'تم تعديل كلمة المرور بنجاح'
+        jwt.verify(token, config.SECRET_KEY, async (error, user) => {
+
+            console.error(error)
+
+            if(error)
+                return response.status(406).json({
+                    accepted: false,
+                    message: 'غير صالح'
+                })
+
+            //const hashedPassword = bcrypt.hashSync(newPassword, config.SALT_ROUNDS)
+            const updatePassword = await userModel.updatePassword(user.user.id, newPassword)
+
+            return response.status(200).json({
+                accepted: true,
+                message: 'تم تعديل كلمة المرور بنجاح'
+            })
         })
 
     } catch(error) {
@@ -133,5 +148,6 @@ const updatePassword = async (request, response) => {
         })
     }
 }
+
 
 module.exports = { loginUser, sendForgetPasswordMail, updatePassword }

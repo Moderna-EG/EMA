@@ -35,10 +35,26 @@ const ExchangePermission = ({ items, loading }) => {
             editable: 'never'
         },
     ]
+
+    const [isAdmin, setIsAdmin] = useState(false)
+
+    const permissionId = window.location.pathname.split('/')[3]
+
+    useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user')).user
+
+        if(user.role === 'مالك') {
+            setIsAdmin(true)
+        }
+
+    }, [isAdmin])
     
     return (<div>
-        <MaterialTable 
-        title=""
+        {
+            isAdmin ?
+            <MaterialTable 
+        title={permissionId}
         isLoading={loading}
         localization={{
             body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
@@ -47,6 +63,20 @@ const ExchangePermission = ({ items, loading }) => {
         data={items}
         options={ { exportButton: true } }
         icons={TableIcons} />
+
+        :
+
+        <MaterialTable 
+        title={permissionId}
+        isLoading={loading}
+        localization={{
+            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+        }}
+        columns={columns} 
+        data={items}
+        options={ { exportButton: true } }
+        icons={TableIcons} />
+        }
     </div>)
 }
 

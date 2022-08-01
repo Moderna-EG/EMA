@@ -1,13 +1,17 @@
 
 .sidebar-icons {
     background-color: #F0F2F5;
-    height: 100%;
-    z-index: 1;
+    height: 100vh;
+    z-index: 100;
     transition: all .5s ease;
     display: flex;
     justify-content: center;
     align-items: center;
     padding-top: 2rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 7%;
 }
 
 a {
@@ -23,7 +27,7 @@ a:hover {
 .sidebar-icons ul li {
     list-style: none;
     display: block;
-    padding: 1rem .5rem;
+    padding: .5rem .5rem;
     text-align: center;
     transition: all .5s ease;
     font-weight: bold;
@@ -45,10 +49,6 @@ a:hover {
     padding-top: .3rem;
 }
 
-.logout {
-    position: absolute;
-    bottom: 1rem;
-}
 
 @media only screen and (max-width: 650px) {
     .sidebar-icons {

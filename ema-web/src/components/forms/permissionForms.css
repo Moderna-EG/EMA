@@ -97,6 +97,11 @@
 }
 
 @media only screen and (max-width: 650px) {
+
+    .permission-form-main {
+        flex-direction: column;
+    }
+
     .permission-form-main input {
         padding: .5rem 1rem;
     }
@@ -121,5 +126,6 @@
 
     .permission-form {
         border-radius: 5px;
+
     }
   }

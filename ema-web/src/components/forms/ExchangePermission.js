@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './permissionForms.css'
 import { userRequest } from '../../api/requests'
-import { ThreeDots } from 'react-loader-spinner'
+import { TailSpin } from 'react-loader-spinner'
 import { Badge } from '@material-ui/core'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { NavLink } from 'react-router-dom'
@@ -48,6 +48,7 @@ const ExchangePermissionForm = () => {
             return setQuantityError('الكمية مطلوبة')
         }
 
+        setQuantity(Number.parseInt(quantity))
 
         setLoading(true)
 
@@ -75,13 +76,11 @@ const ExchangePermissionForm = () => {
                 const itemInfo = {
                     name: pickedItem.name,
                     code: pickedItem.code,
-                    id: pickedItem.id,
-                    quantity: quantity,
+                    itemId: pickedItem.id,
+                    quantity: Number.parseInt(quantity),
                     price: PRICE,
                     bookValue: PRICE * parseInt(quantity)
                 }
-
-                console.log(itemInfo)
 
                 localStorage.setItem('exchangePermissionItems', JSON.stringify([...receivePermissionItems, itemInfo]))
 
@@ -141,7 +140,7 @@ const ExchangePermissionForm = () => {
                         <div>
                             <label>الكمية</label>
                             <p>{quantityError}</p>
-                            <input type="numeric" value={quantity} onChange={e => setQuantity(parseInt(e.target.value))} placeholder="كمية الصنف المصرف" />
+                            <input type="text" value={quantity} default={0} onChange={e => setQuantity(parseInt(e.target.value))} placeholder="كمية الصنف المصرف" />
                         </div>
                     </div>
                 </form>
@@ -149,13 +148,13 @@ const ExchangePermissionForm = () => {
                         <div className="permission-form-btns-right"></div>
                         <div className="permission-form-btns-left">
                             <button onClick={clearInputs}>الغاء</button>
-                            <button className="submit-btn">
-                                <NavLink to="/inventory/exchange-permissions/cart">
-                                    تاكيد 
-                                </NavLink>
+                            <NavLink to="/inventory/exchange-permissions/cart">
+                                <button className="submit-btn">
+                                    تاكيد                                
                                 </button>
+                                </NavLink>
                             <button className="submit-btn" onClick={submit}>
-                                { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل' }
+                                { loading ? <TailSpin color="white" height={20} width={20} /> : 'تسجيل' }
                             </button>
                         </div>
                 </div>

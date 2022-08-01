@@ -1,0 +1,24 @@
+
+.update-message {
+    padding: 1rem 5rem 0 5rem;
+    color: #FFF;
+    background-color: #DC3545;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update-message:hover {
+    opacity: .8;
+}
+
+.none {
+    display: none;
+}
+
+.update-message p {
+    padding: 0 2rem;
+}

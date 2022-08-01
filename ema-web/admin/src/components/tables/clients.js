@@ -58,6 +58,11 @@ const ClientsTable = () => {
                     }
                 ]}
 
+                editable={{
+                    onRowUpdate: true,
+                    onRowDelete: true
+                }}
+
                 icons={TableIcons}
 
             />

@@ -3,7 +3,8 @@ import './login.css'
 import logo from '../../images/EMA logo.png'
 import { authRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
-import { ThreeDots } from 'react-loader-spinner'
+import { TailSpin } from 'react-loader-spinner'
+import { NavLink } from 'react-router-dom'
 
 const Login = (props) => {
 
@@ -14,6 +15,8 @@ const Login = (props) => {
 
     const [emailError, setEmailError] = useState()
     const [passwordError, setPasswordError] = useState()
+
+    const [authError, setAuthError] = useState()
 
     const [loading, setLoading] = useState(false)
 
@@ -35,7 +38,7 @@ const Login = (props) => {
         })
         .catch(error => {
             setLoading(false)
-            console.log(error.response.data)
+            
             const response = error.response.data
 
             if(response.field === 'email') {
@@ -44,6 +47,10 @@ const Login = (props) => {
 
             if(response.field === 'password') {
                 setPasswordError(response.message)
+            }
+
+            if(response.field === 'authorization') {
+                setAuthError(response.message)
             }
         })
     }
@@ -56,10 +63,13 @@ const Login = (props) => {
                     
                     <div className="login-form-image">
                         <img src={logo} />    
+                        
                     </div>
+                    <p className="login-error-message">{authError}</p>
                     <div className="login-form-body" onClick={e => {
                         setEmailError('')
                         setPasswordError('')
+                        setAuthError('')
                     }}>
                     <form>
                         <div>
@@ -73,10 +83,14 @@ const Login = (props) => {
                             <input type="password" onChange={e => setPassword(e.target.value)} placeholder="كلمة المرور" />
                         </div>
                         <div className="login-form-btns">
-                        { loading ? <ThreeDots color="red" height={80} width={80} /> : <input type="submit" value="تسجيل الدخول" onClick={loginUser}/> }
+                        { loading ? <TailSpin color="red" height={50} width={50} /> : <input type="submit" value="تسجيل الدخول" onClick={loginUser}/> }
                         </div>
                         <div>
-                            <span className="forgot-password">هل نسيت كلمة السر</span>
+                            <span className="forgot-password">
+                                <NavLink to="/forget-password">
+                                    هل نسيت كلمة السر   
+                                </NavLink>
+                            </span>
                         </div>
                     </form>
                 </div>

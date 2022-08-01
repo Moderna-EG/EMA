@@ -6,7 +6,7 @@ const clientModel = require('../../models/inventory/Client')
 const { joinReceivePermissionsByProviders, joinExchangePermissionsByClients } = require('../../utils/permissions-aggregation')
 
 
-const addItemAveragesByTime = async (permissions) => {
+/*const addItemAveragesByTime = async (permissions) => {
 
     let currentQuantity = 0
 
@@ -36,12 +36,45 @@ const addItemAveragesByTime = async (permissions) => {
             }    
     
             permissions[i].momentaverageprice = AVERAGE_PRICE
-            permissions[i].momentaveragebookvalue = AVERAGE_BOOK_VALUE
+            //permissions[i].momentaveragebookvalue = AVERAGE_BOOK_VALUE
             permissions[i].momenttotalquantity = Math.abs(currentQuantity)
+            permissions[i].momentaveragebookvalue = AVERAGE_PRICE * Math.abs(currentQuantity)
         }
 
         return permissions
-    }
+    }*/
+
+    const addItemAveragesByTime = async (permissions) => {
+
+    let currentQuantity = 0
+
+    for(let i=0;i<permissions.length;i++) {
+
+            let itemAveragePriceFunction = receivePermissionItemModel.getAveragePriceOfItemByDate
+
+            const itemAveragePrice = await itemAveragePriceFunction(permissions[i].itemid, permissions[i].permissiondate)
+
+            const AVERAGE_PRICE = Math.trunc(itemAveragePrice[0].avg)
+
+            if(permissions[i].permissiontype == 'receive') {
+
+                const TOTAL_QUANTITY = permissions[i].receivepermissionquantity
+                currentQuantity += TOTAL_QUANTITY
+
+            } else if(permissions[i].permissiontype == 'exchange') {
+
+                const TOTAL_QUANTITY = permissions[i].exchangepermissionquantity
+                currentQuantity -= TOTAL_QUANTITY
+
+            }    
+
+            permissions[i].momentaverageprice = AVERAGE_PRICE
+            permissions[i].momenttotalquantity = Math.abs(currentQuantity)
+            permissions[i].momentaveragebookvalue = AVERAGE_PRICE * Math.abs(currentQuantity)
+        }
+
+        return permissions
+}
 
 const getItems = async (request, response) => {
 
@@ -194,21 +227,24 @@ const getItemCard = async (request, response) => {
         if(item.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'معرف الصنف غير موجود'
+                message: 'معرف الصنف غير موجود',
+                field: 'itemId'
             })
         }
 
         if(providers.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'لا يوجد موردين'
+                message: 'لا يوجد موردين',
+                field: 'provider'
             })
         }
 
         if(clients.length == 0) {
             return response.status(406).json({
                 accepted: false,
-                message: 'لا يوجد عملاء'
+                message: 'لا يوجد عملاء',
+                field: 'client'
             })
         }
 

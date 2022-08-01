@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './permissionForms.css'
 import { userRequest } from '../../api/requests'
-import { ThreeDots } from 'react-loader-spinner'
+import { TailSpin } from 'react-loader-spinner'
 import { Badge } from '@material-ui/core'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { NavLink } from 'react-router-dom'
@@ -66,10 +66,10 @@ const ReceivePermissionForm = ({ modal }) => {
         const itemInfo = {
             name: pickedItem.name,
             code: pickedItem.code,
-            id: pickedItem.id,
-            quantity: quantity,
-            price: price,
-            bookValue: price * quantity
+            itemId: pickedItem.id,
+            quantity: Number.parseInt(quantity),
+            price: Number.parseInt(price),
+            bookValue: Number.parseInt(price) * Number.parseInt(quantity)
         }
 
 
@@ -133,13 +133,13 @@ const ReceivePermissionForm = ({ modal }) => {
                         <div className="permission-form-btns-right"></div>
                         <div className="permission-form-btns-left">
                             <button onClick={clearInputs}>الغاء</button>
+                            <NavLink to="/inventory/receive-permissions/cart">
                                 <button className="submit-btn">
-                                <NavLink to="/inventory/receive-permissions/cart">
                                     تاكيد 
-                                </NavLink>
                                 </button>
+                            </NavLink>
                             <button type="submit" form="receive-permission" className="submit-btn" value="تسجيل" onClick={submit}>
-                                    { loading ? <ThreeDots color="white" height={20} width={20} /> : 'تسجيل'}
+                                { loading ? <TailSpin color="white" height={20} width={20} /> : 'تسجيل'}
                             </button>
                         </div>
                 </div>

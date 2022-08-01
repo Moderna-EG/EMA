@@ -1,5 +1,6 @@
 const clientModel = require('../../models/inventory/Client')
 const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
+const moment = require('moment')
 
 const addClient = async (request, response) => {
 
@@ -49,10 +50,22 @@ const addClient = async (request, response) => {
             })
         }
 
-        if(!operationDate instanceof Date) {
+        if(!operationDate) {
             return response.status(406).json({
                 accepted: false,
-                message: 'تاريخ العمل مع العميل مطلوب',
+                message: 'تاريخ التعامل مع العميل مطلوب',
+                field: 'operationDate'
+            })
+        }
+
+        console.log(operationDate)
+
+        const isValidDate = moment(operationDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isValidDate) {
+            return response.status(406).json({
+                accepted: false,
+                message: 'تاريخ العمل مع العميل غير صالح',
                 field: 'operationDate'
             })
         }
@@ -169,6 +182,14 @@ const updateClient = async (request, response) => {
             message: 'تاريخ العمل مع العميل مطلوب',
             field: 'clientOperationDate'
         })
+
+        const isValidDate = moment(clientOperationDate.operationDate, 'MM-DD-YYYY', true).isValid()
+
+        if(!isValidDate) return response.status(406).json({
+            accepted: false,
+            message: 'تاريخ التعامل مع العميل غير صالح',
+            field: 'clientOperationDate'
+        }) 
 
         clientOperationDate.operationDate = new Date(clientOperationDate.operationDate)
 

@@ -1,5 +1,6 @@
 module.exports = {
     PORT: 5000,
+    HOST_URL: 'http://localhost:3000',
     DB: {
         USER: process.env.USER_DB,
         HOST: process.env.HOST_DB,

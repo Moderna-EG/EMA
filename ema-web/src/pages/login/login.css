@@ -100,6 +100,13 @@ label {
     display: block;
 }
 
+.login-error-message {
+    color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media only screen and (max-width: 650px) {
 
     .login-form-wrapper {

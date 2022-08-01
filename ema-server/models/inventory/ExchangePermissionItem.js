@@ -124,6 +124,23 @@ class ExchangePermissionItem {
 
     }
 
+    async getItemsByPermissionsIds(placeholders, permissionsList) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT
+            *
+            FROM ExchangePermissionsItems
+            WHERE
+            PermissionId IN (${placeholders})
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, permissionsList)
+        client.release()
+
+        return result.rows
+    }
+
     
 
 }

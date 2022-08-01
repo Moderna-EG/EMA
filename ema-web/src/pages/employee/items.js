@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/EmployeeSidebar'
+import Sidebar from '../../components/sidebar/SideBar'
 import ItemsTable from '../../components/tables/items'
 import './employee.css'
 import ItemModal from '../../components/modal/Item'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
+import { useNavigate } from 'react-router-dom'
 
 
 const EmployeeItems = () => {
 
+    const navigate = useNavigate()
+    const [authorized, setAuthorized] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showSidebar, setShowSidebar] = useState(true)
 
@@ -20,13 +23,30 @@ const EmployeeItems = () => {
         setShowModal(false)
     }
 
+    useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user'))
+
+        if(!user) {
+            setAuthorized(false)
+            navigate('/login')
+            return
+        }
+
+        setAuthorized(true)
+
+    }, [authorized])
+
     return (
-        <div>
+        <>
+        {
+            authorized
+            ?
+            <div>
             <Navbar />
             {showModal ? <ItemModal modal={closeModal} /> : null }
             <div className="employee-main">
                 <div className="employee-wrapper">
-                    <SideMenuIcons />
                     <ItemsTable modal={openModal}/>
                 </div>
                 <div>
@@ -34,6 +54,10 @@ const EmployeeItems = () => {
                 </div>
             </div>
         </div>
+        :
+        ''
+        }
+        </>
     )
 }
 export default EmployeeItems

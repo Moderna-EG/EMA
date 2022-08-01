@@ -40,6 +40,10 @@ const ReceivePermissionTable = () => {
         columns={columns} 
         data={data} 
         options={ { pageSize: 15, exportButton: true } }
+        editable={{
+            onRowUpdate: true,
+            onRowDelete: true
+        }}
         icons={TableIcons} />
     </div>)
 }

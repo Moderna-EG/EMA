@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/EmployeeSidebar'
+import Sidebar from '../../components/sidebar/SideBar'
 import ExchangePermissionForm from '../../components/forms/ExchangePermission'
 import './employee.css'
 import SuccessModal from '../../components/modal/success'
 import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeExchangePermission = () => {
 
+    const navigate = useNavigate()
+    const [authorized, setAuthorized] = useState(false)
     const [successModal, setSuccessModal] = useState(false)
     const [modalMessage, setModalMessage] = useState('')
 
@@ -20,13 +23,30 @@ const EmployeeExchangePermission = () => {
         setModalMessage(message)
     }
 
+    useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user'))
+
+        if(!user) {
+            setAuthorized(false)
+            navigate('/login')
+            return
+        }
+
+        setAuthorized(true)
+
+    }, [authorized])
+
     return (
-        <div>
+        <>
+        {
+            authorized
+            ?
+            <div>
             <Navbar />
             { successModal ? <SuccessModal closeModal={closeModal} message={modalMessage}/> : undefined }
             <div className="employee-main">
                 <div className="employee-wrapper">
-                    <SideMenuIcons />
                     <ExchangePermissionForm modal={showModal} />
                 </div>
                 <div>
@@ -34,6 +54,10 @@ const EmployeeExchangePermission = () => {
                 </div>
             </div>
         </div>
+        :
+        ''
+        }
+        </>
     )
 }
 export default EmployeeExchangePermission

@@ -61,6 +61,11 @@ const ProvidersTable = () => {
                     }
                 ]}
 
+                editable={{
+                    onRowUpdate: true,
+                    onRowDelete: true
+                }}
+
                 icons={TableIcons}
 
             />

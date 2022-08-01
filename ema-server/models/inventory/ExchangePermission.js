@@ -179,6 +179,23 @@ class ExchangePermission {
         return true
     }
 
+    async getExchangePermissionsAndAfterByDatetime(permissionDate) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT  *
+            FROM ExchangePermissions
+            WHERE
+            permissionDate >= $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate])
+        client.release()
+
+        return result.rows
+
+    }
+
 }
 
 module.exports = new ExchangePermission()
