@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 import EmployeesTable from '../../components/tables/employees'
 import './employee.css'
-import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import EmployeeModal from '../../components/modal/employee'
 import { useNavigate } from 'react-router-dom'
 

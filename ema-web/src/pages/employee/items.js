@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 import ItemsTable from '../../components/tables/items'
 import './employee.css'
 import ItemModal from '../../components/modal/Item'
-import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import { useNavigate } from 'react-router-dom'
 
 

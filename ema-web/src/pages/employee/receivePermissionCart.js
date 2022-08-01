@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 import './employee.css'
-import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import ReceivePermissionCartTable from '../../components/tables/receivePermissionCart'
 import { useNavigate } from 'react-router-dom'
 

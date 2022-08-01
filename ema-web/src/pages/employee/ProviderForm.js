@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 import ProviderForm from '../../components/forms/Provider'
 import './employee.css'
 import SuccessModal from '../../components/modal/success'
-import SideMenuIcons from '../../components/sideMenuIcons/SideMenuIcons'
 import { useNavigate } from 'react-router-dom'
 
 const ProviderFormPage = () => {
