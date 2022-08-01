@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import PersonOffIcon from '@mui/icons-material/PersonOff'
 import './unauthorized.css'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 
 const UnauthorizedPage = () => {
 
