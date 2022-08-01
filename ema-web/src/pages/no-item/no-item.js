@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits'
 import './no-item.css'
 import Navbar from '../../components/navbar/Navbar'
-import Sidebar from '../../components/sidebar/SideBar'
+import Sidebar from '../../components/sidebar/Sidebar'
 
 const NoItemPage = () => {
 
