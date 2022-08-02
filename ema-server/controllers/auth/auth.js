@@ -80,7 +80,7 @@ const sendForgetPasswordMail = async (request, response) => {
 
         const user = users[0]
 
-        const userData = jwt.sign({ user }, config.SECRET_KEY, { expiresIn: '1h' })
+        const userData = jwt.sign({ userId: user.id }, config.SECRET_KEY, { expiresIn: '1h' })
 
         const isSent = await sendResetMail(user.email, user.name, userData)
 
@@ -96,6 +96,7 @@ const sendForgetPasswordMail = async (request, response) => {
         return response.status(200).json({
             accepted: true,
             message: 'تم ارسال البريد ',
+            userData
         })
 
     } catch(error) {
@@ -123,8 +124,6 @@ const updatePassword = async (request, response) => {
         
         jwt.verify(token, config.SECRET_KEY, async (error, user) => {
 
-            console.error(error)
-
             if(error)
                 return response.status(406).json({
                     accepted: false,
@@ -132,7 +131,7 @@ const updatePassword = async (request, response) => {
                 })
 
             //const hashedPassword = bcrypt.hashSync(newPassword, config.SALT_ROUNDS)
-            const updatePassword = await userModel.updatePassword(user.user.id, newPassword)
+            const updatePassword = await userModel.updatePassword(user.userId, newPassword)
 
             return response.status(200).json({
                 accepted: true,
