@@ -1,8 +1,15 @@
 const { response } = require('express')
 const providerModel = require('../../models/inventory/Provider')
+const itemModel = require('../../models/inventory/Item')
 const receivePermissionModel = require('../../models/inventory/ReceivePermission')
+const receivePermissionItemModel = require('../../models/inventory/ReceivePermissionItem')
 const { isPaymentMethod } = require('../../utils/validPaymentMethod')
 const { isPhoneValid } = require('../../utils/validatePhone')
+const { createDBPlaceholders } = require('../../utils/DBPlaceholders')
+const { extractItemsIds } = require('../../utils/extractItemIds')
+const { joinItemsByIds } = require('../../utils/join-items')
+const moment = require('moment')
+
 
 const addProvider = async (request, response) => {
 
@@ -316,5 +323,97 @@ const deleteProvider = async (request, response) => {
     }
 }
 
+const getProviderItemsStats = async (request, response) => {
 
-module.exports = { addProvider, getProviders, updateProvider, deleteProvider }
+    try {
+
+        const { providerId } = request.params
+
+        const items = await receivePermissionItemModel.getProviderItemsStats(providerId)
+
+        if(items.length == 0) return response.status(200).json({
+            accepted: true,
+            items: []
+        }) 
+
+        const itemsIds = extractItemsIds(items)
+        const placeholders = createDBPlaceholders(itemsIds)
+
+        let itemsData = await itemModel.getItemsByIds(placeholders, itemsIds)
+
+        itemsData = joinItemsByIds(itemsData, items) 
+
+        return response.status(200).json({
+            accepted: true,
+            items: itemsData
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getProviderItemsStatsByDates = async (request, response) => {
+
+    try {
+
+        const { providerId, fromDate, toDate } = request.params
+
+        const isFromDateValid = moment(fromDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isFromDateValid) return response.status(406).json({
+            accepted: false,
+            message: 'التاريخ غير صالح',
+            field: 'fromDate'
+        })
+
+        const isToDateValid = moment(toDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isToDateValid) return response.status(406).json({
+            accepted: false,
+            message: 'التاريخ غير صالح',
+            field: 'toDate'
+        })
+
+        const items = await receivePermissionItemModel
+        .getProviderItemsStatsByDates(providerId, fromDate, toDate)
+
+        if(items.length == 0) return response.status(200).json({
+            accepted: true,
+            items: []
+        }) 
+
+        const itemsIds = extractItemsIds(items)
+        const placeholders = createDBPlaceholders(itemsIds)
+
+        let itemsData = await itemModel.getItemsByIds(placeholders, itemsIds)
+
+        itemsData = joinItemsByIds(itemsData, items) 
+
+        return response.status(200).json({
+            accepted: true,
+            items: itemsData
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+
+module.exports = { 
+    addProvider, 
+    getProviders, 
+    updateProvider, 
+    deleteProvider,
+    getProviderItemsStats,
+    getProviderItemsStatsByDates
+}

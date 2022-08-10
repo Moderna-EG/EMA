@@ -9,6 +9,24 @@ const clientModel = require('../../models/inventory/Client')
 const ExchangePermissionItem = require('../../models/inventory/ExchangePermissionItem')
 
 
+const getItemQuantityAtThatDate = async (itemId, date) => {
+
+    const [receivedItemsQuantity, exchangedItemsQuantity] = await Promise.all([
+        receivePermissionItemModel.getItemQuantityBeforeDatetime(itemId, date),
+        exchangePermissionItemModel.getItemQuantityBeforeDatetime(itemId, date)
+    ])
+
+    const RECEIVED_QUANTITY = Number.parseInt(receivedItemsQuantity[0].sum)
+    const EXCHANGED_QUANTITY = Number.parseInt(exchangedItemsQuantity[0].sum)
+
+    const CURRENT_QUANTITY = RECEIVED_QUANTITY - EXCHANGED_QUANTITY
+
+
+    return CURRENT_QUANTITY
+
+}
+
+
 const extractItemsIds = (permissions) => {
 
     let Ids = []
@@ -94,7 +112,138 @@ const removeDuplicates = (Ids) => {
 
     return unqiue
 }
+
+const checkPermissionsQuantitiesAfterEdite = (newQuantity, permissions) => {
+
+    for(let i=0;i<permissions.length;i++) {
+
+        if(permissions[i].type == 'receive') {
+
+            newQuantity += permissions[i].quantity
+        }
+
+        if(permissions[i].type == 'exchange') {
+
+            newQuantity -= permissions[i].quantity
+        }
+
+        if(newQuantity < 0) {
+            return { isAccepted: false, permission: permissions[i] }
+        }
+    }
+
+    return { isAccepted: true }
+}
  
+
+
+const updateReceivePermissionQuantityAndBookValue = async (permissionId, receivePermissionItemId, itemQuantity, newPrice) => {
+
+    const NEW_BOOK_VALUE = itemQuantity * newPrice
+
+
+    const updateNewQuantity = await receivePermissionItemModel
+    .updateReceivePermissionsItemQuantityAndBookValueById(receivePermissionItemId, itemQuantity, NEW_BOOK_VALUE)
+
+    
+    const totalValueList = await receivePermissionItemModel.getReceivePermissionItemsTotalPrice(permissionId)
+    const NEW_TOTAL_VALUE = Number.parseInt(totalValueList[0].sum)
+
+    const newPermissionTotalValue = await receivePermissionModel
+    .updateReceivePermissionTotalValue(permissionId, NEW_TOTAL_VALUE)
+
+}
+
+const updateReceivePermissionPriceAndBookValue = async (permissionId, receivePermissionItemId, newQuantity, itemPrice) => {
+
+    const NEW_BOOK_VALUE = newQuantity * itemPrice
+
+    const updateNewPrice = await receivePermissionItemModel
+    .updateReceivePermissionsItemPriceAndBookValueById(receivePermissionItemId, itemPrice, NEW_BOOK_VALUE)
+    
+    const totalValueList = await receivePermissionItemModel.getReceivePermissionItemsTotalPrice(permissionId)
+    const NEW_TOTAL_VALUE = Number.parseInt(totalValueList[0].sum)
+
+    const newPermissionTotalValue = await receivePermissionModel
+    .updateReceivePermissionTotalValue(permissionId, NEW_TOTAL_VALUE)
+
+}
+
+const deleteReceivePermissionItemAndUpdatePermission = async (permissionId, receivePermissionItemId) => {
+
+    const deletePermissionItem = await receivePermissionItemModel.deleteReceivePermissionsItemsById(receivePermissionItemId)
+
+    const permissionItems = await receivePermissionItemModel.getReceivePermissionItemById(permissionId)
+
+    if(permissionItems.length == 0) {
+
+        const deletePermission = await receivePermissionModel.deleteReceivePermission(permissionId)
+
+    } else {
+
+        const totalValueList = await receivePermissionItemModel.getReceivePermissionItemsTotalPrice(permissionId)
+        const NEW_TOTAL_VALUE = Number.parseInt(totalValueList[0].sum)
+
+        const newPermissionTotalValue = await receivePermissionModel
+        .updateReceivePermissionTotalValue(permissionId, NEW_TOTAL_VALUE)
+    }
+    
+}
+
+const deleteExchangePermissionItemAndUpdatePermission = async (permissionId, exchangePermissionItemId) => {
+
+    const deletePermissionItem = await exchangePermissionItemModel.deleteExchangePermissionsItemsById(exchangePermissionItemId)
+
+    const permissionItems = await exchangePermissionItemModel.getExchangePermissionItemById(permissionId)
+
+    if(permissionItems.length == 0) {
+
+        const deletePermission = await exchangePermissionModel.deleteExchangePermission(permissionId)
+
+    } else {
+
+        const totalValueList = await exchangePermissionItemModel.getExchangePermissionItemsTotalPrice(permissionId)
+        const NEW_TOTAL_VALUE = Number.parseInt(totalValueList[0].sum)
+
+        const newPermissionTotalValue = await exchangePermissionModel
+        .updateExchangePermissionTotalValue(permissionId, NEW_TOTAL_VALUE)
+    }
+    
+}
+
+
+const updateExchangePermissionQuantityAndBookValue = async (permissionId, exchangePermissionItemId, newQuantity, itemPrice) => {
+
+    const NEW_BOOK_VALUE = newQuantity * itemPrice
+
+    const updateNewQuantity = await exchangePermissionItemModel
+    .updateExchangePermissionsItemQuantityAndBookValueById(exchangePermissionItemId, newQuantity, NEW_BOOK_VALUE)
+    
+    const totalValueList = await exchangePermissionItemModel.getExchangePermissionItemsTotalPrice(permissionId)
+    const NEW_TOTAL_VALUE = Number.parseInt(totalValueList[0].sum)
+
+    const newPermissionTotalValue = await exchangePermissionModel
+    .updateExchangePermissionTotalValue(permissionId, NEW_TOTAL_VALUE)
+
+}
+
+const updateItemsPrices = async (permissions) => {
+
+    for(let i=0;i<permissions.length;i++) {
+
+        const itemAveragePrice = await receivePermissionItemModel
+        .getAveragePriceOfItemByDate(permissions[i].itemid, permissions[i].permissiondate)
+
+        const AVERAGE_PRICE = Math.trunc(itemAveragePrice[0].avg)
+        const BOOK_VALUE = AVERAGE_PRICE * permissions[i].quantity
+
+
+        const updatePermisison = await exchangePermissionItemModel
+        .updateExchangePermissionsItemPriceAndBookValueById(permissions[i].id, AVERAGE_PRICE, BOOK_VALUE)
+
+        
+    }
+}
 
 const calculateItemsTotalPrice = (items) => {
 
@@ -121,6 +270,21 @@ const calculateExchangeItemsTotalPrice = async (items) => {
     }
 
     return total
+}
+
+const calculateAndUpdateItemQuantity = async (itemId) => {
+
+    const [totalReceived, totalExchanged] = await Promise.all([
+        receivePermissionItemModel.getItemTotalQuantity(itemId),
+        exchangePermissionItemModel.getItemTotalQuantity(itemId)
+    ])
+
+    const TOTAL_RECEIVED = Number.parseInt(totalReceived[0].sum)
+    const TOTAL_EXCHANGED = Number.parseInt(totalExchanged[0].sum)
+
+    const CURRENT_QUANTITY = TOTAL_RECEIVED - TOTAL_EXCHANGED
+    
+    const updateItemQuantity = await itemModel.updateItemQuantityById(itemId, CURRENT_QUANTITY)
 }
 
 
@@ -773,6 +937,468 @@ const deletePermissiosAndUpdateItems = async (request, response) => {
     }
 }
 
+const editeReceivePermissionQuantity = async (request, response) => {
+
+    try {
+
+        const { receivePermissionItemId } = request.params
+        const { newQuantity } = request.body
+
+        if(!Number.isInteger(newQuantity)) return response.status(406).json({
+            accepted: false,
+            message: 'الكمية يجب ان تكون رقم',
+            field: 'newQuantity'
+        })
+
+        if(newQuantity == 0) return response.status(406).json({
+            accepted: false,
+            message: 'الكمية يجب ان تكون اكبر من 0',
+            field: 'newQuantity'
+        })
+
+
+        const permissionList = await receivePermissionItemModel.getReceivePermissionsItemsById(receivePermissionItemId)
+
+        if(permissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'رقم الاذن غير صالح'
+        })
+
+        const permission = permissionList[0]
+        const ITEM_PRICE = Number.parseInt(permission.price)
+
+        if(permission.quantity == newQuantity) {
+
+            return response.status(406).json({
+                accepted: true,
+                message: 'تمت العملية بنجاح',
+                note: 'equal'
+            })
+
+        } else if(permission.quantity < newQuantity) {
+
+
+            const updatePermission = await updateReceivePermissionQuantityAndBookValue(
+                permission.permissionid,
+                permission.permissionitemid,
+                newQuantity,
+                ITEM_PRICE
+                )
+
+            const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid)
+            
+            return response.status(200).json({
+                accepted: true,
+                message: 'تمت العملية بنجاح',
+                note: 'more than'
+            })
+
+        } else {
+
+            const currentItemQuantity = await getItemQuantityAtThatDate(permission.itemid, permission.permissiondate)
+
+            let ITEM_QUANTITY = currentItemQuantity
+
+            if(!ITEM_QUANTITY) ITEM_QUANTITY = 0
+
+            let [receivedItemsAfter, exchangedItemsAfter] = await Promise.all([
+                receivePermissionModel.getReceivePermissionsAfterPermissionDateThatIncludesItem(permission.permissiondate, permission.itemid),
+                exchangePermissionModel.getExchangePermissionsAfterPermissionDateThatIncludesItem(permission.permissiondate, permission.itemid)
+            ])
+
+            receivedItemsAfter = receivedItemsAfter.map(permission => {
+                permission.type = 'receive'
+                return permission
+            })
+
+            exchangedItemsAfter = exchangedItemsAfter.map(permission => {
+                permission.type = 'exchange'
+                return permission
+            })
+
+            let permissions = [...receivedItemsAfter, ...exchangedItemsAfter]
+
+            permissions = permissions.sort((permission1, permission2) => {
+
+                const date1 = new Date(permission1.permissiondate)
+                const date2 = new Date(permission2.permissiondate)
+
+                return date1 - date2
+            })
+
+            //console.log(permissions)
+
+            const EDITED_QUANTITY = ITEM_QUANTITY + newQuantity
+
+            /*console.log({
+                EDITED_QUANTITY,
+                ITEM_QUANTITY,
+                newQuantity
+            })*/
+
+            const permissionStatus = checkPermissionsQuantitiesAfterEdite(EDITED_QUANTITY, permissions)
+
+            //console.log(permissionStatus)
+
+            if(!permissionStatus.isAccepted) {
+
+                return response.status(406).json({
+                    accepted: false,
+                    message: `هناك تعارض بسبب اذن رقم ${permissionStatus.permission.permissionid}`
+                })
+            }
+
+            const updatePermission = await updateReceivePermissionQuantityAndBookValue(
+                permission.permissionid,
+                permission.permissionitemid,
+                newQuantity,
+                ITEM_PRICE
+            )
+
+            const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid)
+
+        }
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const editeExchangePermissionQuantity = async (request, response) => {
+
+    try {
+
+        const { exchangePermissionItemId } = request.params
+        const { newQuantity } = request.body
+
+        if(!Number.isInteger(newQuantity)) return response.status(406).json({
+            accepted: false,
+            message: 'الكمية يجب ان تكون رقم',
+            field: 'newQuantity'
+        })
+
+        if(newQuantity == 0) return response.status(406).json({
+            accepted: false,
+            message: 'الكمية يجب ان تكون اكبر من 0',
+            field: 'newQuantity'
+        })
+
+
+        const permissionList = await exchangePermissionItemModel.getExchangePermissionsItemsById(exchangePermissionItemId)
+
+        if(permissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'رقم الاذن غير صالح'
+        })
+
+        const permission = permissionList[0]
+        const ITEM_PRICE = Number.parseInt(permission.price)
+
+        if(permission.quantity == newQuantity) {
+
+            return response.status(406).json({
+                accepted: true,
+                message: 'تمت العملية بنجاح',
+                note: 'equal'
+            })
+
+        } else if(permission.quantity > newQuantity) {
+
+            const updatePermission = await updateExchangePermissionQuantityAndBookValue(
+                permission.permissionid,
+                permission.permissionitemid,
+                newQuantity,
+                ITEM_PRICE
+                )
+
+            const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid)
+            
+            return response.status(200).json({
+                accepted: true,
+                message: 'تمت العملية بنجاح',
+                note: 'more than'
+            })
+
+        } else {
+
+            const currentItemQuantity = await getItemQuantityAtThatDate(permission.itemid, permission.permissiondate)
+
+            let ITEM_QUANTITY = currentItemQuantity
+
+            if(!ITEM_QUANTITY) ITEM_QUANTITY = 0
+
+            let [receivedItemsAfter, exchangedItemsAfter] = await Promise.all([
+                receivePermissionModel.getReceivePermissionsBeforePermissionDateThatIncludesItem(permission.permissiondate, permission.itemid),
+                exchangePermissionModel.getExchangePermissionsBeforePermissionDateThatIncludesItem(permission.permissiondate, permission.itemid)
+            ])
+
+            receivedItemsAfter = receivedItemsAfter.map(permission => {
+                permission.type = 'receive'
+                return permission
+            })
+
+            exchangedItemsAfter = exchangedItemsAfter.map(permission => {
+                permission.type = 'exchange'
+                return permission
+            })
+
+            let permissions = [...receivedItemsAfter, ...exchangedItemsAfter]
+
+            permissions = permissions.sort((permission1, permission2) => {
+
+                const date1 = new Date(permission1.permissiondate)
+                const date2 = new Date(permission2.permissiondate)
+
+                return date1 - date2
+            })
+
+            //console.log(permissions)
+
+            const EDITED_QUANTITY = ITEM_QUANTITY - newQuantity
+
+            const permissionStatus = checkPermissionsQuantitiesAfterEdite(EDITED_QUANTITY, permissions)
+
+
+            if(!permissionStatus.isAccepted) {
+
+                return response.status(406).json({
+                    accepted: false,
+                    message: `الكمية المنصرفة المعدلة اكثر من الكمية الموجودة في ذالك التاريخ`
+                })
+            }
+
+            const updatePermission = await updateExchangePermissionQuantityAndBookValue(
+                permission.permissionid,
+                permission.permissionitemid,
+                newQuantity,
+                ITEM_PRICE
+            )
+
+            const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid)
+            
+        }
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const editeReceivePermissionPrice = async (request, response) => {
+
+    try {
+
+        const { receivePermissionItemId } = request.params
+        const { newPrice } = request.body
+
+        if(!Number.isInteger(newPrice)) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'السعر غير صالح',
+                field: 'newwPrice'
+            })
+        }
+
+        if(newPrice == 0) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'السعر غير صالح',
+                field: 'newwPrice'
+            })
+        }
+
+        const permissionList = await receivePermissionItemModel.getReceivePermissionsItemsById(receivePermissionItemId)
+
+        if(permissionList.length == 0) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'لا يوجد صنف في الاذن بهذا المعرف',
+                field: 'receivePermissionItemId'
+            })
+        }
+
+        const permission = permissionList[0]
+
+        if(permission.price == newPrice) {
+
+            return response.status(200).json({
+                accepted: true,
+                message: 'تمت العملية بنجاح'
+            })
+        }
+
+        let exchangedItemsAfter = await exchangePermissionModel
+        .getExchangePermissionsAfterPermissionDateThatIncludesItem(permission.permissiondate, permission.itemid)
+
+        exchangedItemsAfter = exchangedItemsAfter.map(permission => {
+            permission.price = Number.parseInt(permission.price)
+            return permission
+        })
+       
+
+        const updatePermission = await updateReceivePermissionPriceAndBookValue(
+            permission.permissionid,
+            permission.permissionitemid,
+            permission.quantity,
+            newPrice
+        )
+
+        await updateItemsPrices(exchangedItemsAfter)
+
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const deleteReceivePermissionItem = async (request, response) => {
+
+    try {
+
+        const { receivePermissionItemId } = request.params
+
+        const permissionList = await receivePermissionItemModel.getReceivePermissionsItemsById(receivePermissionItemId)
+
+        if(permissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'رقم الاذن غير صالح'
+        })
+
+        const permission = permissionList[0]
+
+        const currentItemQuantity = await getItemQuantityAtThatDate(permission.itemid, permission.permissiondate)
+
+        let ITEM_QUANTITY = currentItemQuantity
+
+        if(!ITEM_QUANTITY) ITEM_QUANTITY = 0
+
+        let [receivedItemsAfter, exchangedItemsAfter] = await Promise.all([
+            receivePermissionModel.getReceivePermissionsAfterPermissionDateThatIncludesItem(permission.permissiondate, permission.itemid),
+            exchangePermissionModel.getExchangePermissionsAfterPermissionDateThatIncludesItem(permission.permissiondate, permission.itemid)
+        ])
+
+        receivedItemsAfter = receivedItemsAfter.map(permission => {
+            permission.type = 'receive'
+            return permission
+        })
+
+        exchangedItemsAfter = exchangedItemsAfter.map(permission => {
+            permission.type = 'exchange'
+            return permission
+        })
+
+        let permissions = [...receivedItemsAfter, ...exchangedItemsAfter]
+
+        permissions = permissions.sort((permission1, permission2) => {
+
+            const date1 = new Date(permission1.permissiondate)
+            const date2 = new Date(permission2.permissiondate)
+
+            return date1 - date2
+        })
+
+
+        const permissionStatus = checkPermissionsQuantitiesAfterEdite(ITEM_QUANTITY, permissions)
+
+        if(!permissionStatus.isAccepted) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: `هناك تعارض بسبب اذن رقم ${permissionStatus.permission.permissionid}`
+            })
+        }
+
+
+        const updatePermission = await deleteReceivePermissionItemAndUpdatePermission(
+            permission.permissionid,
+            permission.permissionitemid
+        )
+
+        const updateItemPrices = await updateItemsPrices(exchangedItemsAfter)
+        
+        const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid) 
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const deleteExchangePermissionItem = async (request, response) => {
+
+    try {
+
+        const { exchangePermissionItemId } = request.params
+
+        const permissionList = await exchangePermissionItemModel.getExchangePermissionsItemsById(exchangePermissionItemId)
+
+        if(permissionList.length == 0) return response.status(406).json({
+            accepted: false,
+            message: 'رقم الاذن غير صالح'
+        })
+
+        const permission = permissionList[0]
+
+        const updatePermission = await deleteExchangePermissionItemAndUpdatePermission(
+            permission.permissionid,
+            permission.permissionitemid
+        )
+        
+        const updateItemQuantity = await calculateAndUpdateItemQuantity(permission.itemid) 
+
+        return response.status(200).json({
+            accepted: true,
+            message: 'تمت العملية بنجاح'
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+
 
 
 
@@ -789,5 +1415,10 @@ module.exports = {
     updateExchangePermissionClient,
     getProviderPermissions,
     getClientPermissions,
-    deletePermissiosAndUpdateItems
+    deletePermissiosAndUpdateItems,
+    editeReceivePermissionQuantity,
+    editeExchangePermissionQuantity,
+    editeReceivePermissionPrice,
+    deleteReceivePermissionItem,
+    deleteExchangePermissionItem
  }

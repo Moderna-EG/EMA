@@ -6,6 +6,7 @@ import ReceivePermissionTable from '../../components/tables/receivePermission'
 import { userRequest } from '../../api/requests'
 import ReceivePermissionInvoice from '../../components/printComponent/printReceivePermissionInvoice'
 import { useNavigate } from 'react-router-dom'
+import { response } from 'express'
 
 
 const ReceivePermission = () => {
@@ -15,6 +16,7 @@ const ReceivePermission = () => {
     const [permission, setPermission] = useState()
     const [permissionItems, setPermissionItems] = useState([])
     const [loading, setLoading] = useState(true)
+    const [errorMessage, setErrorMessage] = useState()
 
     useEffect(() => {
 
@@ -29,7 +31,7 @@ const ReceivePermission = () => {
             setLoading(false)
         })
         .catch(error => console.error(error))
-    }, [])
+    }, [loading])
 
     useEffect(() => {
 
@@ -45,6 +47,52 @@ const ReceivePermission = () => {
 
     }, [authorized])
 
+    const updatePermissionItem = async (newData, oldData) => {
+
+        if(newData.quantity !== oldData.quantity) {
+            
+            userRequest
+            .patch(`/inventory/receive-permissions/receive-permissions-items/${newData.id}/quantity`, { newQuantity: Number.parseInt(newData.quantity) })
+            .then(response => {
+                setLoading(true)
+            })
+            .catch(error => {
+                setErrorMessage(error.response.data.message)
+            })
+        }
+
+        if(newData.price !== oldData.price) {
+
+            userRequest
+            .patch(`/inventory/receive-permissions/receive-permissions-items/${newData.id}/price`, { newPrice: Number.parseInt(newData.price) })
+            .then(response => {
+                setLoading(true)
+            })
+            .catch(error => {
+                console.error(error)
+            })
+        }
+    }
+
+    const deletePermissionItem = async (permissionItem) => {
+
+        /*userRequest.delete(`/inventory/permissions/${permissionItem.id}/receive`)
+        .then(response => {
+            
+            if(permissionItems.length === 1) {
+
+                navigate('/inventory/receive-permissions')
+
+            } else {
+
+                setLoading(true)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })*/
+    }
+
     return (
         <>
         {
@@ -55,7 +103,7 @@ const ReceivePermission = () => {
             <div className="employee-main">
                 <div className="employee-wrapper">
                     { !loading ? <ReceivePermissionInvoice items={permissionItems} permission={permission} /> : ''}
-                    <ReceivePermissionTable items={permissionItems} loading={loading} />
+                    <ReceivePermissionTable items={permissionItems} loading={loading} deletePermissionItem={deletePermissionItem} updatePermissionItem={updatePermissionItem} errorMessage={errorMessage}/>
                 </div>
                 <div>
                     <Sidebar />

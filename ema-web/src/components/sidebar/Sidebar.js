@@ -5,7 +5,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { NavLink } from 'react-router-dom'
-
+import QueryStatsIcon from '@mui/icons-material/QueryStats'
 import EngineeringIcon from '@mui/icons-material/Engineering'
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
@@ -32,6 +32,16 @@ const Sidebar = () => {
                         <span>اصناف</span> 
                     </NavLink> 
                 </li>
+                { isAdmin ?
+                <li>
+                    <NavLink to="/inventory/items/stats">
+                        <QueryStatsIcon />
+                        <span>احصائيات الاصناف</span>
+                    </NavLink>
+                </li>
+                :
+                ''    
+                }
                 <li>
                     <NavLink to="/inventory/receive-permissions">
                         <AddBusinessIcon />

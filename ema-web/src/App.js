@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Login from './pages/login/Login'
 import EmployeeItems from './pages/employee/items'
 import ReceivePermissionForm from './pages/employee/receivePermissionForm'
@@ -18,10 +18,11 @@ import ProviderFormPage from './pages/employee/ProviderForm'
 import ClientFormPage from './pages/employee/clientForm'
 import ForgetPasswordForm from './pages/forget-password/forget-password'
 import NewPasswordForm from './pages/new-password/new-password'
-import SuccessMessage from './components/success-message/success-message'
-import ItemCardInvoice from './components/printComponent/itemCardInvoice'
 import UnauthorizedPage from './pages/authorization/unauthorized'
 import NoItemPage from './pages/no-item/no-item'
+import ItemsGraphs from './pages/employee/graphs/items-graph'
+import ProviderGraph from './pages/employee/graphs/providers-graph'
+import ClientGraph from './pages/employee/graphs/clients-graph'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 
@@ -49,14 +50,15 @@ function App() {
           <Route path="/inventory/employee-form" element={<EmployeeFormPage />} />
           <Route path="/inventory/provider-form" element={<ProviderFormPage />} />
           <Route path="/inventory/client-form" element={<ClientFormPage />} />
+          <Route path="/inventory/items/stats" element={<ItemsGraphs />} />
+          <Route  path="/inventory/providers/:providerId/stats" element={<ProviderGraph />} />
+          <Route  path="/inventory/clients/:clientId/stats" element={<ClientGraph />} />
           <Route path="/forget-password" element={<ForgetPasswordForm />} />
           <Route path="/reset-password/:token" element={<NewPasswordForm />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route  path="/no-item" element={<NoItemPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Login />} />
-
-          <Route path="/test" element={<ItemCardInvoice />} />
 
         </Routes>
       </Router>

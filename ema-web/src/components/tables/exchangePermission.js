@@ -62,6 +62,10 @@ const ExchangePermission = ({ items, loading }) => {
         columns={columns} 
         data={items}
         options={ { exportButton: true } }
+        editable={{
+            onRowDelete: true,
+            onRowUpdate: true
+        }}
         icons={TableIcons} />
 
         :

@@ -90,6 +90,20 @@ class Item {
 
         return true
     }
+
+    async getItemsByIds(placeholders, itemsList) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT * FROM Items
+            WHERE ID IN(${placeholders})
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, itemsList)
+        client.release()
+
+        return result.rows
+    }
 }
 
 module.exports = new Item()

@@ -3,7 +3,11 @@ const receivePermissionItemModel = require('../../models/inventory/ReceivePermis
 const exchangePermissionItemModel = require('../../models/inventory/ExchangePermissionItem')
 const providerModel = require('../../models/inventory/Provider')
 const clientModel = require('../../models/inventory/Client')
+const moment = require('moment')
 const { joinReceivePermissionsByProviders, joinExchangePermissionsByClients } = require('../../utils/permissions-aggregation')
+const { extractItemsIds } = require('../../utils/extractItemIds')
+const { createDBPlaceholders } = require('../../utils/DBPlaceholders')
+const { joinItemsByIds } = require('../../utils/join-items')
 
 
 /*const addItemAveragesByTime = async (permissions) => {
@@ -44,7 +48,7 @@ const { joinReceivePermissionsByProviders, joinExchangePermissionsByClients } = 
         return permissions
     }*/
 
-    const addItemAveragesByTime = async (permissions) => {
+const addItemAveragesByTime = async (permissions) => {
 
     let currentQuantity = 0
 
@@ -402,6 +406,108 @@ const deleteItem = async (request, response) => {
     }
 }
 
+const getReceivedItemsQuantityByDate = async (request, response) => {
+
+    try {
+
+        const { fromDate, toDate } = request.params
+
+        const isValid = moment(fromDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isValid) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'تاريخ غير صحيح',
+                field: 'fromDate'
+            })
+        }
+
+        const isToDateValid = moment(toDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isToDateValid) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'تاريخ غير صحيح',
+                field: 'toDate'
+            })
+        }
+
+        const itemsTotalQuantity = await receivePermissionItemModel.getItemsQuantityGroupedByItemIdFromDate(toDate, fromDate)
+
+        const itemsIds = extractItemsIds(itemsTotalQuantity)
+        const itemsPlaceholders = createDBPlaceholders(itemsIds)
+
+        const itemsData = await itemModel.getItemsByIds(itemsPlaceholders, itemsIds)
+
+        const items = joinItemsByIds(itemsData, itemsTotalQuantity)
+
+        return response.status(200).json({
+            accepted: true,
+            items
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getExchangedItemsQuantityByDate = async (request, response) => {
+
+    try {
+
+        const { fromDate, toDate } = request.params
+
+        const isFromDateValid = moment(fromDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isFromDateValid) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'تاريخ غير صحيح',
+                field: 'fromDate'
+            })
+        }
+
+        const isToDateValid = moment(toDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isToDateValid) {
+
+            return response.status(406).json({
+                accepted: false,
+                message: 'تاريخ غير صحيح',
+                field: 'toDate'
+            })
+        }
+
+        const itemsTotalQuantity = await exchangePermissionItemModel.getItemsQuantityGroupedByItemIdFromDate(toDate, fromDate)
+
+        const itemsIds = extractItemsIds(itemsTotalQuantity)
+        const itemsPlaceholders = createDBPlaceholders(itemsIds)
+
+        const itemsData = await itemModel.getItemsByIds(itemsPlaceholders, itemsIds)
+
+        const items = joinItemsByIds(itemsData, itemsTotalQuantity)
+
+        return response.status(200).json({
+            accepted: true,
+            items
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
 module.exports = { 
     getItems,
     addItem,
@@ -409,5 +515,7 @@ module.exports = {
     getItemAveragePrice,
     getItemCard,
     updateItem,
-    deleteItem
+    deleteItem,
+    getReceivedItemsQuantityByDate,
+    getExchangedItemsQuantityByDate
 }

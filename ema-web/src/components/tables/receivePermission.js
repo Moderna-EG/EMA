@@ -4,13 +4,16 @@ import TableIcons from './TableIcons'
 import AddBusinessIcon from '@mui/icons-material/AddBusiness'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import { userRequest } from '../../api/requests'
+import UpdateMessage from '../update-message/update-message'
 
-const ReceivePermission = ({ items, loading }) => {
+
+const ReceivePermission = ({ items, loading, updatePermissionItem, deletePermissionItem, errorMessage }) => {
 
     const columns = [
         { 
             title: 'قيمة دفترية',
             field: 'bookvalue',
+            editable: 'never',
             headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
         },
         { 
@@ -26,11 +29,18 @@ const ReceivePermission = ({ items, loading }) => {
         { 
             title: 'كود',
             field: 'code',
+            editable: 'never',
             headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
         },
         { 
             title: 'الصنف',
             field: 'name',
+            headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
+            editable: 'never'
+        },
+        { 
+            title: 'المعرف',
+            field: 'id',
             headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
             editable: 'never'
         },
@@ -52,7 +62,11 @@ const ReceivePermission = ({ items, loading }) => {
     }, [isAdmin])
     
     return (<div>
-
+        { errorMessage ?
+                <UpdateMessage message={errorMessage}/>
+                :
+                ''
+                }
         {
             isAdmin
             ?
@@ -65,6 +79,10 @@ const ReceivePermission = ({ items, loading }) => {
             columns={columns} 
             data={items}
             options={ { exportButton: true } }
+            editable={{
+                onRowDelete: deletePermissionItem,
+                onRowUpdate: updatePermissionItem
+            }}
             icons={TableIcons} />
             :
             <MaterialTable 

@@ -37,7 +37,7 @@ const   loginUser = async (request, response) => {
 
         const USER_PASSWORD = user[0].password
 
-        if(USER_PASSWORD != password) {
+        if(!bcrypt.compareSync(password, USER_PASSWORD)) {
             return response.status(406).json({
                 accepted: false,
                 message: 'كلمة السر خاطئة',
@@ -96,7 +96,7 @@ const sendForgetPasswordMail = async (request, response) => {
         return response.status(200).json({
             accepted: true,
             message: 'تم ارسال البريد ',
-            userData
+            token: userData
         })
 
     } catch(error) {
@@ -130,8 +130,8 @@ const updatePassword = async (request, response) => {
                     message: 'غير صالح'
                 })
 
-            //const hashedPassword = bcrypt.hashSync(newPassword, config.SALT_ROUNDS)
-            const updatePassword = await userModel.updatePassword(user.userId, newPassword)
+            const hashedPassword = bcrypt.hashSync(newPassword, Number.parseInt(config.SALT_ROUNDS))
+            const updatePassword = await userModel.updatePassword(user.userId, hashedPassword)
 
             return response.status(200).json({
                 accepted: true,

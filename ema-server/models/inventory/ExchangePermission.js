@@ -196,6 +196,97 @@ class ExchangePermission {
 
     }
 
+    async getExchangePermissionsThatIncludesItemBetweenDates(itemId, fromDate, toDate) {
+
+        const pool = await dbConnect()
+        const query = `
+            SELECT  *
+            FROM ExchangePermissions
+            INNER JOIN ExchangePermissionsItems ON ExchangePermissionsItems.PermissionId = ExchangePermissions.ID
+            WHERE
+            ItemId = $1
+            AND
+            PermissionDate >= $2
+            AND
+            PermissionDate <= $3
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [itemId, fromDate, toDate])
+        client.release()
+
+        return result.rows
+    }
+
+    async getExchangePermissionsAfterPermissionDateThatIncludesItem(permissionDate, itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT *
+        FROM ExchangePermissions
+        INNER JOIN ExchangePermissionsItems ON ExchangePermissionsItems.PermissionId = ExchangePermissions.ID
+        WHERE
+        ExchangePermissions.permissionDate > $1
+        AND
+        ExchangePermissionsItems.ItemId = $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate, itemId])
+        client.release()
+
+        return result.rows
+    }
+
+    async getExchangePermissionsBeforePermissionDateThatIncludesItem(permissionDate, itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT *
+        FROM ExchangePermissions
+        INNER JOIN ExchangePermissionsItems ON ExchangePermissionsItems.PermissionId = ExchangePermissions.ID
+        WHERE
+        ExchangePermissions.permissionDate < $1
+        AND
+        ExchangePermissionsItems.ItemId = $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate, itemId])
+        client.release()
+
+        return result.rows
+    }
+
+    async updateExchangePermissionTotalValue(permissionId, totalValue) {
+
+        const pool = await dbConnect()
+        const query = `
+            UPDATE
+            ExchangePermissions
+            SET TotalValue = $2
+            WHERE
+            ID = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId, totalValue])
+        client.release()
+
+        return result.rows
+    }
+
+    async deleteExchangePermission(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            DELETE FROM ExchangePermissions
+            where
+            Id = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return true
+    }
+
 }
 
 module.exports = new ExchangePermission()

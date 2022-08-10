@@ -166,6 +166,21 @@ class ReceivePermission {
         return true
     }
 
+    async deleteReceivePermission(permissionId) {
+
+        const pool = await dbConnect()
+        const query = `
+            DELETE FROM ReceivePermissions
+            where
+            Id = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId])
+        client.release()
+
+        return true
+    }
+
     async getReceivePermissionsAndAfterByDatetime(permissionDate) {
 
         const pool = await dbConnect()
@@ -181,6 +196,61 @@ class ReceivePermission {
 
         return result.rows
 
+    }
+
+    async updateReceivePermissionTotalValue(permissionId, totalValue) {
+
+        const pool = await dbConnect()
+        const query = `
+            UPDATE
+            ReceivePermissions
+            SET TotalValue = $2
+            WHERE
+            ID = $1
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionId, totalValue])
+        client.release()
+
+        return result.rows
+    }
+
+    async getReceivePermissionsAfterPermissionDateThatIncludesItem(permissionDate, itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT *
+        FROM ReceivePermissions
+        INNER JOIN ReceivePermissionsItems ON ReceivePermissionsItems.PermissionId = ReceivePermissions.ID
+        WHERE
+        ReceivePermissions.permissionDate > $1
+        AND
+        ReceivePermissionsItems.ItemId = $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate, itemId])
+        client.release()
+
+        return result.rows
+    }
+
+    async getReceivePermissionsBeforePermissionDateThatIncludesItem(permissionDate, itemId) {
+
+        const pool = await dbConnect()
+        const query = `
+        SELECT *
+        FROM ReceivePermissions
+        INNER JOIN ReceivePermissionsItems ON ReceivePermissionsItems.PermissionId = ReceivePermissions.ID
+        WHERE
+        ReceivePermissions.permissionDate < $1
+        AND
+        ReceivePermissionsItems.ItemId = $2
+        `
+        const client = await pool.connect()
+        const result = await client.query(query, [permissionDate, itemId])
+        client.release()
+
+        return result.rows
     }
 
     

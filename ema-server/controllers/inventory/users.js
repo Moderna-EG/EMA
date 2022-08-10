@@ -1,3 +1,4 @@
+const config = require('../../config/config')
 const usersModel = require('../../models/inventory/User')
 const receivePermissionModel = require('../../models/inventory/ReceivePermission')
 const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
@@ -10,7 +11,7 @@ const addUser = async (request, response) => {
 
     try {
 
-        const { name, email, password, phone, role } = request.body
+        let { name, email, password, phone, role } = request.body
 
         if(!name) {
             return response.status(406).json({
@@ -104,6 +105,8 @@ const addUser = async (request, response) => {
                 field: 'role'
             })
         }
+
+        password = bcrypt.hashSync(password, Number.parseInt(config.SALT_ROUNDS))
 
         const user = await usersModel.addUser(name, email, password, phone, role)
 

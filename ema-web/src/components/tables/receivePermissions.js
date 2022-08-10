@@ -1,36 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { userRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
-import DownloadIcon from '@mui/icons-material/Download'
 
 const ReceivePermissionsTable = () => {
 
     const navigate = useNavigate()
 
-    const [isAdmin, setIsAdmin] = useState(false)
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
-    const [errorMessage, setErrorMessage] = useState()
 
     useEffect(() => {
 
-        const user = JSON.parse(localStorage.getItem('user')).user
-
-        if(user.role === 'مالك') {
-            setIsAdmin(true)
-        }
-
-        //generatePDF()
         userRequest.get('/inventory/receive-permissions')
         .then(items => {
             setData(formateData(items.data.permissions))
             setLoading(false)
         })
         .catch(error => console.error(error))
-    } , [loading, isAdmin])
+    } , [loading])
 
     const formateData = (permissionData) => {
 
@@ -48,25 +37,7 @@ const ReceivePermissionsTable = () => {
 
         return `${newDate.getMonth() + 1}-${newDate.getDate()}-${newDate.getFullYear()} ${newDate.getHours() + 1}:${newDate.getMinutes()}:${newDate.getSeconds()}`
     }
-
-    const updateProvider = async (newProvider, oldProvider) => {
-
-        userRequest.patch(`/inventory/receive-permissions/${newProvider.permissionid}`, { providerCode: newProvider.providercode})
-        .then(response => setLoading(true))
-        .catch(error => {
-            setErrorMessage(error.response.data.message)
-        })
-    }
-
-    const deletePermissions = async (permission) => {
-
-        userRequest.delete(`/inventory/permissions/${permission.permissionid}/receive`)
-        .then(response => setLoading(true))
-        .catch(error => {
-
-            setErrorMessage(error.response.data.message)
-        })
-    }   
+  
 
 
 
@@ -82,44 +53,7 @@ const ReceivePermissionsTable = () => {
     
     ]
     
-    return (<div>
-        { errorMessage }
-        {
-            isAdmin
-            ?
-            <MaterialTable 
-        title="" 
-        isLoading={loading}
-        columns={columns} 
-        data={data} 
-        localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
-        }}
-        options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
-        actions={[
-            {
-                icon: TableIcons.Add,
-                tooltip: 'اضافة اذن استلام',
-                isFreeAction: true,
-                onClick: () => navigate('/inventory/providers')
-            },
-            {
-                icon: TableIcons.Refresh,
-                tooltip: 'تحديث',
-                isFreeAction: true,
-                onClick: () => setLoading(true)
-            }
-        ]}
-
-        editable={{
-            onRowUpdate: updateProvider,
-            onRowDelete: deletePermissions
-        }}
-
-        icons={TableIcons} />
-
-            :
-            
+    return (<div>                
             <MaterialTable 
                 title="" 
                 isLoading={loading}
@@ -145,8 +79,6 @@ const ReceivePermissionsTable = () => {
         ]}
 
         icons={TableIcons} />
-        }
-
     </div>)
 }
 

@@ -130,6 +130,9 @@ const ClientsTable = () => {
         { title: 'الاسم', field: 'name', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'انشاء اذن صرف', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
              render: props => <button className="action-btn" onClick={ e => toProviderItemsForm(props.id)}>انشاء</button>
+        },
+        { title: 'احصئيات', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'},
+             render: props => <button className="action-btn" onClick={ e => {navigate(`/inventory/clients/${props.id}/stats`)}}>عرض</button>
         }
 
     ]

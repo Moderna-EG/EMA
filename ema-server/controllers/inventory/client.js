@@ -1,6 +1,11 @@
 const clientModel = require('../../models/inventory/Client')
 const exchangePermissionModel = require('../../models/inventory/ExchangePermission')
+const exchangePermissionItemModel = require('../../models/inventory/ExchangePermissionItem')
+const itemModel = require('../../models/inventory/Item')
 const moment = require('moment')
+const { createDBPlaceholders } = require('../../utils/DBPlaceholders')
+const { extractItemsIds } = require('../../utils/extractItemIds')
+const { joinItemsByIds } = require('../../utils/join-items')
 
 const addClient = async (request, response) => {
 
@@ -57,8 +62,6 @@ const addClient = async (request, response) => {
                 field: 'operationDate'
             })
         }
-
-        console.log(operationDate)
 
         const isValidDate = moment(operationDate, 'YYYY-MM-DD', true).isValid()
 
@@ -248,4 +251,96 @@ const deleteClient = async (request, response) => {
     }
 }
 
-module.exports = { addClient, getClients, updateClient, deleteClient }
+const getClientItemsStats = async (request, response) => {
+
+    try {
+
+        const { clientId } = request.params
+
+        const items = await exchangePermissionItemModel.getClientItemsStats(clientId)
+
+        if(items.length == 0) return response.status(200).json({
+            accepted: true,
+            items: []
+        }) 
+
+        const itemsIds = extractItemsIds(items)
+        const placeholders = createDBPlaceholders(itemsIds)
+
+        let itemsData = await itemModel.getItemsByIds(placeholders, itemsIds)
+
+        itemsData = joinItemsByIds(itemsData, items) 
+
+        return response.status(200).json({
+            accepted: true,
+            items: itemsData
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+const getClientItemsStatsByDates = async (request, response) => {
+
+    try {
+
+        const { clientId, fromDate, toDate } = request.params
+
+        const isFromDateValid = moment(fromDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isFromDateValid) return response.status(406).json({
+            accepted: false,
+            message: 'التاريخ غير صالح',
+            field: 'fromDate'
+        })
+
+        const isToDateValid = moment(toDate, 'YYYY-MM-DD', true).isValid()
+
+        if(!isToDateValid) return response.status(406).json({
+            accepted: false,
+            message: 'التاريخ غير صالح',
+            field: 'toDate'
+        })
+
+        const items = await exchangePermissionItemModel
+        .getClientItemsStatsByDates(clientId, fromDate, toDate)
+
+        if(items.length == 0) return response.status(200).json({
+            accepted: true,
+            items: []
+        }) 
+
+        const itemsIds = extractItemsIds(items)
+        const placeholders = createDBPlaceholders(itemsIds)
+
+        let itemsData = await itemModel.getItemsByIds(placeholders, itemsIds)
+
+        itemsData = joinItemsByIds(itemsData, items) 
+
+        return response.status(200).json({
+            accepted: true,
+            items: itemsData
+        })
+
+    } catch(error) {
+        console.error(error)
+        return response.status(500).json({
+            accepted: false,
+            message: 'internal server error'
+        })
+    }
+}
+
+module.exports = { 
+    addClient, 
+    getClients, 
+    updateClient, 
+    deleteClient,
+    getClientItemsStats,
+    getClientItemsStatsByDates
+}

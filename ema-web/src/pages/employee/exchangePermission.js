@@ -8,7 +8,7 @@ import ExchangePermissionInvoice from '../../components/printComponent/printExch
 import { useNavigate } from 'react-router-dom'
 
 
-const ReceivePermission = () => {
+const ExchangePermission = () => {
 
     const navigate = useNavigate()
     const [authorized, setAuthorized] = useState(false)
@@ -18,8 +18,6 @@ const ReceivePermission = () => {
 
 
     useEffect(() => {
-
-        const user = JSON.parse(localStorage.getItem('user'))
 
         const permissionId = window.location.pathname.split('/')[3]
 
@@ -32,6 +30,20 @@ const ReceivePermission = () => {
         })
         .catch(error => console.error(error))
     }, [])
+
+    useEffect(() => {
+
+        const user = JSON.parse(localStorage.getItem('user'))
+
+        if(!user) {
+            setAuthorized(false)
+            return navigate('/login')
+        }
+
+        setAuthorized(true)
+
+
+    }, [authorized])
 
 
 
@@ -59,4 +71,4 @@ const ReceivePermission = () => {
         </>
     )
 }
-export default ReceivePermission
+export default ExchangePermission
