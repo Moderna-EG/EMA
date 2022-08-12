@@ -136,7 +136,6 @@ const checkPermissionsQuantitiesAfterEdite = (newQuantity, permissions) => {
 }
  
 
-
 const updateReceivePermissionQuantityAndBookValue = async (permissionId, receivePermissionItemId, itemQuantity, newPrice) => {
 
     const NEW_BOOK_VALUE = itemQuantity * newPrice
@@ -279,8 +278,11 @@ const calculateAndUpdateItemQuantity = async (itemId) => {
         exchangePermissionItemModel.getItemTotalQuantity(itemId)
     ])
 
-    const TOTAL_RECEIVED = Number.parseInt(totalReceived[0].sum)
-    const TOTAL_EXCHANGED = Number.parseInt(totalExchanged[0].sum)
+    let TOTAL_RECEIVED = Number.parseInt(totalReceived[0].sum)
+    let TOTAL_EXCHANGED = Number.parseInt(totalExchanged[0].sum)
+
+    if(!TOTAL_RECEIVED) TOTAL_RECEIVED = 0
+    if(!TOTAL_EXCHANGED) TOTAL_EXCHANGED = 0
 
     const CURRENT_QUANTITY = TOTAL_RECEIVED - TOTAL_EXCHANGED
     
@@ -1044,7 +1046,7 @@ const editeReceivePermissionQuantity = async (request, response) => {
 
                 return response.status(406).json({
                     accepted: false,
-                    message: `هناك تعارض بسبب اذن رقم ${permissionStatus.permission.permissionid}`
+                    message: `هناك تعارض بسبب اذن صرف رقم ${permissionStatus.permission.permissionid}`
                 })
             }
 
@@ -1334,7 +1336,7 @@ const deleteReceivePermissionItem = async (request, response) => {
 
             return response.status(406).json({
                 accepted: false,
-                message: `هناك تعارض بسبب اذن رقم ${permissionStatus.permission.permissionid}`
+                message: `هناك تعارض بسبب اذن صرف رقم ${permissionStatus.permission.permissionid}`
             })
         }
 
