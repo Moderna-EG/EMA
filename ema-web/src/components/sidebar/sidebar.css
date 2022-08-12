@@ -1,0 +1,57 @@
+
+.sidebar-icons {
+    background-color: #F0F2F5;
+    height: 100vh;
+    z-index: 100;
+    transition: all .5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 7%;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+    transition: all .5s ease;
+}
+a:hover {
+    text-decoration: none;
+    color: #DC3545;
+}
+
+.sidebar-icons ul li {
+    list-style: none;
+    display: block;
+    padding: .5rem .5rem;
+    text-align: center;
+    transition: all .5s ease;
+    font-weight: bold;
+}
+
+.employee-side-bar {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.sidebar-icons ul li:hover {
+    color: #DC3545;
+    cursor: pointer;
+}
+
+.sidebar-icons ul li span {
+    display: block;
+    padding-top: .3rem;
+}
+
+
+@media only screen and (max-width: 650px) {
+    .sidebar-icons {
+        display: none;
+    }
+  }

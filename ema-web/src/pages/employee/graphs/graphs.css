@@ -1,0 +1,65 @@
+
+.graph-container {
+    background-color: #FFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.loading-graph {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+.graph {
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.graph-input-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.graph-header {
+    padding: 1rem;
+}
+
+.graph-input-container input {
+    border: none;
+    border-bottom: 2px solid #F0F2F5;
+    width: 10rem;
+}
+
+.graph-input-container input:focus {
+    outline: none;
+    border-bottom: 2px solid #DC3545;
+}
+
+.graph-input-container button {
+    width: 100%;
+    margin-top: 1rem;
+    border: none;
+    background-color: #DC3545;
+    color: #FFF;
+    border-radius: 5px;
+    padding: .2rem;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 650px) {
+
+    .graph-input-container {
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-bottom: 3rem;
+    }
+
+}

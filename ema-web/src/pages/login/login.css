@@ -1,0 +1,123 @@
+
+
+.container-fluid {
+    background-color: #F0F2F5;
+}
+
+.login-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0rem;
+}
+
+.login-form-wrapper {
+    background-color: #FFF;
+    padding: 0rem 3rem 1rem 3rem;
+    border-radius: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
+    border-radius: 5px;  
+    margin: 0 1rem; 
+}
+
+.login-form-header {
+    text-align: right;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.login-form-body p {
+    display: flex;
+    justify-content: center;
+    color: #DC3545;
+}
+
+label {
+    display: block;
+    text-align: right;
+    font-weight: bold;
+    padding-top: .8rem;
+}
+
+.login-form-image {
+    display: block;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.login-form-image img{
+    width: 250px;
+    height: 150px;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+
+.login-form-body {
+    display: flex;
+    justify-content: center;
+}
+
+.login-form-body input {
+    width: 25rem;
+    padding: 1rem;
+    margin: .5rem 0;
+    text-align: right;
+    border: none;
+    background-color: #F0F2F5;
+    border-radius: 20px;
+}
+
+.login-form-body input:focus {
+    outline: none;
+}
+.login-form-body input[type="submit"] {
+    background-color: #DC3545;
+    color: white;
+    border: none;
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.login-form-body input[type="submit"]:hover {
+    opacity: .9;
+}
+.login-form-btns {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forgot-password {
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+    color:  #000;
+    display: block;
+}
+
+.login-error-message {
+    color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 650px) {
+
+    .login-form-wrapper {
+        width: 95%;
+    }
+    .login-form-wrapper {
+        padding: 1rem;
+    }
+
+    .login-form-body input {
+        width: 100%;
+        padding: .5rem 2rem;
+    }
+}

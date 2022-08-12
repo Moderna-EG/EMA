@@ -1,0 +1,49 @@
+.employee-main {
+    display: flex;
+    flex-direction: row;
+    margin-right: 8rem;
+    margin-top: 3rem;
+    /*background-color: dodgerblue;*/
+}
+
+.employee-wrapper {
+    margin: 3rem 1rem 3rem;
+    border-radius: 5px;
+    width: 100%;
+    padding: 1rem;
+    background-color: #F0F2F5;
+}
+
+.item-card-table {
+    max-width: 98%;
+}
+
+.show {
+    display: block;
+}
+
+
+@media only screen and (max-width: 650px) {
+
+    body {
+        background-color: #F0F2F5;
+    }
+
+    .employee-main {
+        background-color: #F0F2F5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0;
+    }
+
+    .employee-wrapper {
+        margin: 0;
+        margin-top: 2rem;
+        width: 100%;
+    }
+
+    .mobile-icons {
+        display: flex;
+    }
+}
