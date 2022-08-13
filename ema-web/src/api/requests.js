@@ -11,5 +11,5 @@ export const authRequest = axios.create({
 
 export const userRequest = axios.create({
     baseURL: BASE_URL,
-    headers: { token: JSON.parse(localStorage.getItem('user')).token }
+    headers: { token: JSON.parse(localStorage.getItem('user')).token || null }
 })
