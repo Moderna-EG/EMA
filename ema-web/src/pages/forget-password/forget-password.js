@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './forget-password.css'
 import logo from '../../images/EMA logo.png'
-import { authRequest, userRequest } from '../../api/requests'
+import { authRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
 import { TailSpin } from 'react-loader-spinner'
 
@@ -25,7 +25,7 @@ const ForgetPassword = (props) => {
 
         setLoading(true)
 
-        userRequest.post(`/auth/forget-password/${email}`, { email })
+        authRequest.post(`/auth/forget-password/${email}`, { email })
         .then(response => {
             setLoading(false)
             setSuccessMessage(response.data.message)
