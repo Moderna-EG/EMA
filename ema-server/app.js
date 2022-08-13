@@ -26,8 +26,10 @@ app.use('/api/inventory', require('./routes/inventory/client'))
 
 app.get('/', (request, response) => {
 
-
-    return response.sendFile(path.join(__dirname + '/index.html'))
+    return response.status(200).json({
+        accepted: true,
+        message: 'welcome to EMA'
+    })
 })
 
 

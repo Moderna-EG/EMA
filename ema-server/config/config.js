@@ -1,6 +1,6 @@
 module.exports = {
     PORT: 5000,
-    HOST_URL: 'http://137.184.116.235:3000',
+    HOST_URL: 'https://ema-inventory.com',
     DB: {
         USER: process.env.USER_DB,
         HOST: process.env.HOST_DB,
