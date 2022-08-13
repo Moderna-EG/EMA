@@ -33,6 +33,7 @@ const Login = (props) => {
 
             if(user.accepted) {
                 localStorage.setItem('user', JSON.stringify(user))
+                localStorage.setItem('token', JSON.stringify(user.token))
                 navigate('/inventory/items')
             }
         })
