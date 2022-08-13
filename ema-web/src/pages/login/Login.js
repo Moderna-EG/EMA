@@ -39,6 +39,8 @@ const Login = (props) => {
         })
         .catch(error => {
             setLoading(false)
+
+            console.log(error)
             
             const response = error.response.data
 
