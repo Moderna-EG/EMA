@@ -2,7 +2,7 @@ const router = require('express').Router()
 const usersController = require('../../controllers/inventory/users')
 const { adminPermission, adminAndEmployeePermission } = require('../../middlewares/verifyToken')
 
-router.post('/users', adminPermission, (request, response) => usersController.addUser(request, response))
+router.post('/users', (request, response) => usersController.addUser(request, response))
 
 router.get('/users', adminPermission, (request, response) => usersController.getUsers(request, response))
 
