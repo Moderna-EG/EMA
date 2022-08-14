@@ -77,7 +77,10 @@ const Sidebar = () => {
                     </NavLink>
                 </li>
                 <li className="logout">
-                    <NavLink to="/login" onClick={ e => localStorage.setItem('user', null)}>
+                    <NavLink to="/login" onClick={ e => {
+                        localStorage.setItem('user', null)
+                        localStorage.setItem('token', null)
+                    }}>
                         <LogoutIcon />
                         <span>خروج</span>
                     </NavLink>

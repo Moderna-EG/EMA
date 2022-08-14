@@ -9,6 +9,7 @@ import ReceivePermissionForm from './pages/employee/receivePermissionForm'
 import ExchangePermissionForm from './pages/employee/exchangePermissionForm'
 import ReceivePermission from './pages/employee/receivePermission'
 import ExchangePermission from './pages/employee/exchangePermission'
+import ItemFormPage from './pages/employee/itemForm'
 import EmployeeFormPage from './pages/employee/employeeForm'
 import ProviderFormPage from './pages/employee/ProviderForm'
 import ClientFormPage from './pages/employee/clientForm'
@@ -25,6 +26,8 @@ import ProviderGraph from './pages/employee/graphs/providers-graph'
 import ClientGraph from './pages/employee/graphs/clients-graph'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
+import Message from './components/success-message/success-message'
+
 
 function App() {
 
@@ -40,6 +43,7 @@ function App() {
         <Route path="/inventory/exchange-permissions" element={<ExchangePermissions />} />
         <Route path="/inventory/receive-permissions/items-form" element={<ReceivePermissionForm />} />
         <Route path="/inventory/exchange-permissions/items-form" element={<ExchangePermissionForm />} />
+        <Route path="/inventory/item-form" element={<ItemFormPage />} />
         <Route path="/inventory/employee-form" element={<EmployeeFormPage />} />
         <Route path="/inventory/provider-form" element={<ProviderFormPage />} />
         <Route path="/inventory/client-form" element={<ClientFormPage />} />
@@ -58,6 +62,8 @@ function App() {
         <Route path="/inventory/exchange-permissions/:permissionId" element={<ExchangePermission />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
+
+        <Route path="/test" element={<Message />} />
 
         </Routes>
       </Router>

@@ -34,6 +34,8 @@ const ItemsTable = ({ modal }) => {
             setLoading(false)
         })
         .catch(error => console.error(error))
+
+
     } , [loading, isAdmin])
 
     const updateItem = async (newItem, oldItem) => {
@@ -113,7 +115,7 @@ const ItemsTable = ({ modal }) => {
                         icon: TableIcons.Add,
                         tooltip: 'اضافة صنف',
                         isFreeAction: true,
-                        onClick: () => modal()
+                        onClick: () => navigate('/inventory/item-form')
                     },
                     {
                         icon: TableIcons.Refresh,

@@ -128,7 +128,10 @@ const Navbar = () => {
             ''
             }
             <li>
-                <NavLink to="/login" onClick={ e => localStorage.setItem('user', null)}>
+                <NavLink to="/login" onClick={ e => {
+                    localStorage.setItem('user', null)
+                    localStorage.setItem('token', null)
+                }}>
                     <span>
                     خروج
                     </span>

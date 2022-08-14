@@ -9,6 +9,7 @@
     flex-direction: row;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 5000;
 }
 
 .update-message:hover {

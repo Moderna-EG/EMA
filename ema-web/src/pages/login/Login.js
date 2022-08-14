@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { TailSpin } from 'react-loader-spinner'
 import { NavLink } from 'react-router-dom'
 
-const Login = (props) => {
+const Login = () => {
 
     const navigate = useNavigate()
 
@@ -17,7 +17,6 @@ const Login = (props) => {
     const [passwordError, setPasswordError] = useState()
 
     const [authError, setAuthError] = useState()
-
     const [loading, setLoading] = useState(false)
 
     const loginUser = (e) => {
@@ -27,13 +26,14 @@ const Login = (props) => {
         
         authRequest.post('/auth/login', { email, password })
         .then(response => {
+
             setLoading(false)
             
             const user = response.data
 
             if(user.accepted) {
+
                 localStorage.setItem('user', JSON.stringify(user))
-                localStorage.setItem('token', JSON.stringify(user.token))
                 navigate('/inventory/items')
             }
         })
