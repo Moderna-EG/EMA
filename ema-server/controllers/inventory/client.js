@@ -77,7 +77,7 @@ const addClient = async (request, response) => {
 
         return response.status(200).json({
             accepted: true,
-            message: 'client added successfully',
+            message: 'تم اضافة العميل بنجاح',
         })
          
     } catch(error) {
