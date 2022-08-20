@@ -8,9 +8,8 @@ class ExchangePermission {
         const query = `
             INSERT INTO ExchangePermissions (clientId, userId, totalValue, permissionDate)
             VALUES ($1, $2, $3, $4)`
-        const client = await pool.connect()
-        const result = await client.query(query, [clientId, userId, totalValue, permissionDate])
-        client.release()
+        const result = await pool.query(query, [clientId, userId, totalValue, permissionDate])
+        await pool.end()
 
         return true
     }
@@ -32,7 +31,7 @@ class ExchangePermission {
         `
         const client = await pool.connect()
         const data = await client.query(query)
-        client.release()
+        await pool.end()
 
         return data.rows
         
@@ -53,9 +52,8 @@ class ExchangePermission {
             INNER JOIN users ON users.ID = ExchangePermissions.userId
             ORDER BY ExchangePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [])
-        client.release()
+        const result = await pool.query(query, [])
+        await pool.end()
 
         return result.rows
     }
@@ -75,9 +73,8 @@ class ExchangePermission {
             WHERE ExchangePermissions.userId = $1
             ORDER BY ExchangePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [userId])
-        client.release()
+        const result = await pool.query(query, [userId])
+        await pool.end()
 
         return result.rows
     }
@@ -97,9 +94,8 @@ class ExchangePermission {
             WHERE ExchangePermissions.clientId = $1
             ORDER BY ExchangePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [clientId])
-        client.release()
+        const result = await pool.query(query, [clientId])
+        await pool.end()
 
         return result.rows
     }
@@ -108,9 +104,8 @@ class ExchangePermission {
 
         const pool = await dbConnect()
         const query = `SELECT * FROM ExchangePermissions WHERE clientId=$1 AND UserId=$2 AND PermissionDate=$3`
-        const client = await pool.connect()
-        const result = await client.query(query, [clientId, userId, permissionDate])
-        client.release()
+        const result = await pool.query(query, [clientId, userId, permissionDate])
+        await pool.end()
 
         return result.rows
     }
@@ -119,9 +114,8 @@ class ExchangePermission {
 
         const pool = await dbConnect()
         const query = `DELETE FROM exchangePermissions WHERE ID = $1`
-        const client = await pool.connect()
-        const result = await client.query(query, [Id])
-        client.release()
+        const result = await pool.query(query, [Id])
+        await pool.end()
 
         return true
     }
@@ -141,9 +135,8 @@ class ExchangePermission {
             WHERE ExchangePermissions.ID = $1
             ORDER BY ExchangePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return result.rows
     }
@@ -157,9 +150,8 @@ class ExchangePermission {
             ClientId=$2
             WHERE ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId, clientId])
-        client.release()
+        const result = await pool.query(query, [permissionId, clientId])
+        await pool.end()
 
         return true
     }
@@ -172,9 +164,8 @@ class ExchangePermission {
             where
             Id IN (${placeholders})
         `
-        const client = await pool.connect()
-        const result = await client.query(query, permissionsList)
-        client.release()
+        const result = await pool.query(query, permissionsList)
+        await pool.end()
 
         return true
     }
@@ -188,9 +179,8 @@ class ExchangePermission {
             WHERE
             permissionDate >= $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate])
-        client.release()
+        const result = await pool.query(query, [permissionDate])
+        await pool.end()
 
         return result.rows
 
@@ -210,9 +200,8 @@ class ExchangePermission {
             AND
             PermissionDate <= $3
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, fromDate, toDate])
-        client.release()
+        const result = await pool.query(query, [itemId, fromDate, toDate])
+        await pool.end()
 
         return result.rows
     }
@@ -229,9 +218,8 @@ class ExchangePermission {
         AND
         ExchangePermissionsItems.ItemId = $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate, itemId])
-        client.release()
+        const result = await pool.query(query, [permissionDate, itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -248,9 +236,8 @@ class ExchangePermission {
         AND
         ExchangePermissionsItems.ItemId = $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate, itemId])
-        client.release()
+        const result = await pool.query(query, [permissionDate, itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -265,9 +252,8 @@ class ExchangePermission {
             WHERE
             ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId, totalValue])
-        client.release()
+        const result = await pool.query(query, [permissionId, totalValue])
+        await pool.end()
 
         return result.rows
     }
@@ -280,9 +266,8 @@ class ExchangePermission {
             where
             Id = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return true
     }

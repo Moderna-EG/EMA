@@ -8,9 +8,8 @@ class ReceivePermission {
         const query = `
             INSERT INTO ReceivePermissions (providerId, userId, totalValue, permissionDate)
             VALUES ($1, $2, $3, $4)`
-        const client = await pool.connect()
-        const result = await client.query(query, [providerId, userId, totalValue, permissionDate])
-        client.release()
+        const result = await pool.query(query, [providerId, userId, totalValue, permissionDate])
+        await pool.end()
 
         return true
     }
@@ -19,9 +18,8 @@ class ReceivePermission {
 
         const pool = await dbConnect()
         const query = `SELECT * FROM ReceivePermissions WHERE ProviderId=$1 AND UserId=$2 AND PermissionDate=$3`
-        const client = await pool.connect()
-        const result = await client.query(query, [providerId, userId, permissionDate])
-        client.release()
+        const result = await pool.query(query, [providerId, userId, permissionDate])
+        await pool.end()
 
         return result.rows
     }
@@ -41,9 +39,9 @@ class ReceivePermission {
             INNER JOIN users ON users.ID = ReceivePermissions.userId
             ORDER BY ReceivePermissions.permissionDate DESC
         `
-        const client = await pool.connect()
-        const data = await client.query(query)
-        client.release()
+        const pool = await pool.connect()
+        const data = await pool.query(query)
+        await pool.end()
 
         return data.rows
         
@@ -62,9 +60,8 @@ class ReceivePermission {
             INNER JOIN users ON users.ID = ReceivePermissions.userId
             ORDER BY ReceivePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [])
-        client.release()
+        const result = await pool.query(query, [])
+        await pool.end()
 
         return result.rows
     }
@@ -84,9 +81,8 @@ class ReceivePermission {
             WHERE ReceivePermissions.userId = $1
             ORDER BY ReceivePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [userId])
-        client.release()
+        const result = await pool.query(query, [userId])
+        await pool.end()
 
         return result.rows
     }
@@ -106,9 +102,8 @@ class ReceivePermission {
             WHERE ReceivePermissions.providerId = $1
             ORDER BY ReceivePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [providerId])
-        client.release()
+        const result = await pool.query(query, [providerId])
+        await pool.end()
 
         return result.rows
     }
@@ -128,9 +123,8 @@ class ReceivePermission {
             WHERE ReceivePermissions.ID = $1
             ORDER BY ReceivePermissions.ID DESC
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return result.rows
     }
@@ -144,9 +138,8 @@ class ReceivePermission {
             ProviderId=$2
             WHERE ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId, providerId])
-        client.release()
+        const result = await pool.query(query, [permissionId, providerId])
+        await pool.end()
 
         return true
     }
@@ -159,9 +152,8 @@ class ReceivePermission {
             where
             Id IN (${placeholders})
         `
-        const client = await pool.connect()
-        const result = await client.query(query, permissionsList)
-        client.release()
+        const result = await pool.query(query, permissionsList)
+        await pool.end()
 
         return true
     }
@@ -174,9 +166,8 @@ class ReceivePermission {
             where
             Id = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return true
     }
@@ -190,9 +181,8 @@ class ReceivePermission {
             WHERE
             permissionDate >= $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate])
-        client.release()
+        const result = await pool.query(query, [permissionDate])
+        await pool.end()
 
         return result.rows
 
@@ -208,9 +198,8 @@ class ReceivePermission {
             WHERE
             ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId, totalValue])
-        client.release()
+        const result = await pool.query(query, [permissionId, totalValue])
+        await pool.end()
 
         return result.rows
     }
@@ -227,9 +216,8 @@ class ReceivePermission {
         AND
         ReceivePermissionsItems.ItemId = $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate, itemId])
-        client.release()
+        const result = await pool.query(query, [permissionDate, itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -246,9 +234,8 @@ class ReceivePermission {
         AND
         ReceivePermissionsItems.ItemId = $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate, itemId])
-        client.release()
+        const result = await pool.query(query, [permissionDate, itemId])
+        await pool.end()
 
         return result.rows
     }

@@ -195,7 +195,6 @@ const updateClient = async (request, response) => {
         }) 
 
         clientOperationDate.operationDate = new Date(clientOperationDate.operationDate)
-
         
         const updateClient = await clientModel.updateClientById(
             clientId,

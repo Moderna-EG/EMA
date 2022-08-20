@@ -1,5 +1,4 @@
 const dbConnect = require('../../config/db')
-const { getReceivePermissions } = require('./ReceivePermission')
 
 class ReceivePermissionItem {
     
@@ -9,9 +8,8 @@ class ReceivePermissionItem {
         const query = `
             INSERT INTO ReceivePermissionsItems (itemId, permissionId, quantity, price, bookValue)
             VALUES ($1, $2, $3, $4, $5)`
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, permissionId, quantity, price, bookValue])
-        client.release()
+        const result = await pool.query(query, [itemId, permissionId, quantity, price, bookValue])
+        await pool.end()
 
         return true
     }
@@ -29,9 +27,8 @@ class ReceivePermissionItem {
             INNER JOIN items ON items.ID = ReceivePermissionsItems.itemId
             WHERE ReceivePermissionsItems.PermissionId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return result.rows
     }
@@ -51,9 +48,8 @@ class ReceivePermissionItem {
             INNER JOIN items ON items.ID = ReceivePermissionsItems.itemId
             WHERE ReceivePermissionsItems.itemId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
 
@@ -70,9 +66,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissionsItems.PermissionId = ReceivePermissions.Id
             WHERE ReceivePermissionsItems.ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionItemId])
-        client.release()
+        const result = await pool.query(query, [permissionItemId])
+        await pool.end()
 
         return result.rows
     }   
@@ -89,9 +84,8 @@ class ReceivePermissionItem {
             WHERE
             ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionItemId, quantity, bookValue])
-        client.release()
+        const result = await pool.query(query, [permissionItemId, quantity, bookValue])
+        await pool.end()
 
         return result.rows
     }  
@@ -108,9 +102,8 @@ class ReceivePermissionItem {
             WHERE
             ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionItemId, price, bookValue])
-        client.release()
+        const result = await pool.query(query, [permissionItemId, price, bookValue])
+        await pool.end()
 
         return result.rows
     }
@@ -123,9 +116,8 @@ class ReceivePermissionItem {
         FROM ReceivePermissionsItems
         WHERE ItemID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -138,9 +130,8 @@ class ReceivePermissionItem {
         FROM ReceivePermissionsItems
         WHERE PermissionId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionId])
-        client.release()
+        const result = await pool.query(query, [permissionId])
+        await pool.end()
 
         return result.rows
     }
@@ -154,9 +145,8 @@ class ReceivePermissionItem {
         INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.permissionId
         WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, date])
-        client.release()
+        const result = await pool.query(query, [itemId, date])
+        await pool.end()
 
         return result.rows
     }
@@ -169,9 +159,8 @@ class ReceivePermissionItem {
             FROM ReceivePermissionsItems
             WHERE ItemID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -185,9 +174,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
             WHERE ItemID = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, date])
-        client.release()
+        const result = await pool.query(query, [itemId, date])
+        await pool.end()
 
         return result.rows
     }
@@ -201,9 +189,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
             WHERE ItemID = $1 AND ReceivePermissions.PermissionDate <= $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, datetime])
-        client.release()
+        const result = await pool.query(query, [itemId, datetime])
+        await pool.end()
 
         return result.rows
     }
@@ -217,9 +204,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
             WHERE ItemID = $1 AND ReceivePermissions.PermissionDate < $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, datetime])
-        client.release()
+        const result = await pool.query(query, [itemId, datetime])
+        await pool.end()
 
         return result.rows
     }
@@ -232,9 +218,8 @@ class ReceivePermissionItem {
             FROM ReceivePermissionsItems
             WHERE ItemId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -248,9 +233,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
             WHERE ItemId = $1 AND ReceivePermissions.PermissionDate <= $2
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, date])
-        client.release()
+        const result = await pool.query(query, [itemId, date])
+        await pool.end()
 
         return result.rows
     }
@@ -264,9 +248,8 @@ class ReceivePermissionItem {
             INNER JOIN ReceivePermissions ON ReceivePermissions.ID = ReceivePermissionsItems.PermissionId
             WHERE ItemId = $1 AND ReceivePermissions.PermissionDate::date <= $2::date
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId, date])
-        client.release()
+        const result = await pool.query(query, [itemId, date])
+        await pool.end()
 
         return result.rows
     }
@@ -279,9 +262,8 @@ class ReceivePermissionItem {
             FROM ReceivePermissionsItems
             WHERE ItemId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -295,9 +277,8 @@ class ReceivePermissionItem {
             permissionId IN (${placeholders})
                        
         `
-        const client = await pool.connect()
-        const result = await client.query(query, permissionsList)
-        client.release()
+        const result = await pool.query(query, permissionsList)
+        await pool.end()
 
         return result.rows
 
@@ -313,9 +294,8 @@ class ReceivePermissionItem {
             WHERE
             ReceivePermissions.permissionDate >= $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [permissionDate])
-        client.release()
+        const result = await pool.query(query, [permissionDate])
+        await pool.end()
 
         return result.rows
 
@@ -331,9 +311,8 @@ class ReceivePermissionItem {
             WHERE
             PermissionId IN (${placeholders})
         `
-        const client = await pool.connect()
-        const result = await client.query(query, permissionsList)
-        client.release()
+        const result = await pool.query(query, permissionsList)
+        await pool.end()
 
         return result.rows
     }
@@ -350,9 +329,8 @@ class ReceivePermissionItem {
            ReceivePermissions.PermissionDate::date >= $2::date
            GROUP BY ItemId
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [toDate, fromDate])
-        client.release()
+        const result = await pool.query(query, [toDate, fromDate])
+        await pool.end()
 
         return result.rows
     }
@@ -367,9 +345,8 @@ class ReceivePermissionItem {
             WHERE providerId = $1
             GROUP BY providerId, itemId
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [providerId])
-        client.release()
+        const result = await pool.query(query, [providerId])
+        await pool.end()
 
         return result.rows
     }
@@ -389,9 +366,8 @@ class ReceivePermissionItem {
             permissionDate::date <= $3::date
             GROUP BY providerId, itemId
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [providerId, fromDate, toDate])
-        client.release()
+        const result = await pool.query(query, [providerId, fromDate, toDate])
+        await pool.end()
 
         return result.rows
     }
@@ -405,9 +381,8 @@ class ReceivePermissionItem {
             FROM ReceivePermissionsItems
             WHERE ItemId = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemId])
-        client.release()
+        const result = await pool.query(query, [itemId])
+        await pool.end()
 
         return result.rows
     }
@@ -419,9 +394,8 @@ class ReceivePermissionItem {
             DELETE FROM ReceivePermissionsItems
             WHERE ID = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [itemPermissionId])
-        client.release()
+        const result = await pool.query(query, [itemPermissionId])
+        await pool.end()
 
         return result.rows
     }

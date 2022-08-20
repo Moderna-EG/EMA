@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { sendResetMail } = require('../../mail/resetMail')
 const bcrypt = require('bcrypt')
 
-const   loginUser = async (request, response) => {
+const loginUser = async (request, response) => {
 
     try {
 

@@ -6,9 +6,8 @@ class User {
 
         const pool = await dbConnect()
         const query = `INSERT INTO users (name, email, password, phone, role) VALUES($1, $2, $3, $4, $5)`
-        const client = await pool.connect()
-        const result = await client.query(query, [name, email, password, phone, role])
-        client.release()
+        const result = await pool.query(query, [name, email, password, phone, role])
+        await pool.end()
 
         return true
     }
@@ -17,9 +16,8 @@ class User {
         
         const pool = await dbConnect()
         const query = `SELECT ID, name, email, phone, role, isWorking, registrationDate FROM users`
-        const client = await pool.connect()
-        const result = await client.query(query)
-        client.release()
+        const result = await pool.query(query)
+        await pool.end()
 
         return result.rows
     }
@@ -28,9 +26,8 @@ class User {
         
         const pool = await dbConnect()
         const query = `SELECT ID, name, email, phone, role, isWorking, registrationDate FROM users WHERE role=$1`
-        const client = await pool.connect()
-        const result = await client.query(query, [role])
-        client.release()
+        const result = await pool.query(query, [role])
+        await pool.end()
 
         return result.rows
     }
@@ -39,9 +36,8 @@ class User {
 
         const pool = await dbConnect()
         const query = `SELECT * FROM users WHERE Id=$1`
-        const client = await pool.connect()
-        const result = await client.query(query, [Id])
-        client.release()
+        const result = await pool.query(query, [Id])
+        await pool.end()
 
         return result.rows
     }
@@ -50,9 +46,8 @@ class User {
 
         const pool = await dbConnect()
         const query = `SELECT * FROM users WHERE email=$1`
-        const client = await pool.connect()
-        const result = await client.query(query, [email])
-        client.release()
+        const result = await pool.query(query, [email])
+        await pool.end()
 
         return result.rows
     }
@@ -61,9 +56,8 @@ class User {
 
         const pool = await dbConnect()
         const query = `SELECT * FROM users WHERE phone=$1`
-        const client = await pool.connect()
-        const result = await client.query(query, [phone])
-        client.release()
+        const result = await pool.query(query, [phone])
+        await pool.end()
 
         return result.rows
 
@@ -77,9 +71,8 @@ class User {
         SET name=$2, email=$3, phone=$4
         WHERE Id = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [Id, name, email, phone])
-        client.release()
+        const result = await pool.query(query, [Id, name, email, phone])
+        await pool.end()
 
         return true
     }
@@ -92,9 +85,8 @@ class User {
         SET isWorking=$2
         WHERE Id = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [Id, status])
-        client.release()
+        const result = await pool.query(query, [Id, status])
+        await pool.end()
 
         return true
     }
@@ -107,9 +99,8 @@ class User {
         SET password=$2
         WHERE Id = $1
         `
-        const client = await pool.connect()
-        const result = await client.query(query, [Id, password])
-        client.release()
+        const result = await pool.query(query, [Id, password])
+        await pool.end()
 
         return true
     }
@@ -118,9 +109,8 @@ class User {
 
         const pool = await dbConnect()
         const query = `DELETE FROM users WHERE Id = $1`
-        const client = await pool.connect()
-        const result = await client.query(query, [userId])
-        client.release()
+        const result = await pool.query(query, [userId])
+        await pool.end()
 
         return true
     }
