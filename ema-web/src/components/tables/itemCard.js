@@ -1,56 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
-import BlockIcon from '@mui/icons-material/Block'
-import { userRequest } from '../../api/requests'
-import { useNavigate } from 'react-router-dom'
 import UpdateMessage from '../update-message/update-message'
 
 
-const ItemCardTable = ({ permissions, loading, setLoadingTrue, setLoadigFalse, errorMessage }) => {
-
-    const navigate = useNavigate()
-    
-
-    const formateData = (permissions) => {
-
-        for(let i=0;i<permissions.length;i++) {
-
-            if(permissions[i].permissiontype === 'receive') {
-
-                permissions[i].exchangepermissionquantity = 0
-                permissions[i].exchangepermissionprice = 0
-                permissions[i].exchangepermissionbookvalue = 0
-                permissions[i].exchangepermissionid = 0
-                permissions[i].clientcode = 0
-                permissions[i].clientid = 0
-                permissions[i].clientname = 0
-
-            } else if(permissions[i].permissiontype === 'exchange') {
-
-                permissions[i].receivepermissionquantity = 0
-                permissions[i].receivepermissionprice = 0
-                permissions[i].receivepermissionbookvalue = 0
-                permissions[i].receivepermissionid = 0
-                permissions[i].providercode = 0
-                permissions[i].providerid = 0
-                permissions[i].providername = 0
-
-            }
-
-            permissions[i].permissiondate = formateDate(permissions[i].permissiondate)
-        }
-
-        return permissions
-    }
-
-    const formateDate = (permissionDate) => {
-
-        const newDate = new Date(permissionDate)
-
-        return `${newDate.getMonth() + 1}-${newDate.getDate()}-${newDate.getFullYear()}`
-    }
+const ItemCardTable = ({ permissions, loading, setLoadingTrue, setLoadigFalse, errorMessage }) => {    
 
 
     const columns = [
@@ -83,12 +37,41 @@ const ItemCardTable = ({ permissions, loading, setLoadingTrue, setLoadigFalse, e
         ''    
         }
         <MaterialTable 
-        title="" 
+        title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول كارتة الصنف</h4>}
         isLoading={loading}
         columns={columns} 
         data={permissions} 
         localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+            body: {
+                emptyDataSourceMessage: 'لا يوجد سجلات',
+                
+            },
+            editRow: {
+                deleteText: 'مسح',
+                cancelTooltip: 'الغاء'
+            },
+            header: {
+                actions: ''
+            },
+            toolbar: {
+                exportTitle: 'تنزيل',
+                exportAriaLabel: 'تنزيل',
+                searchTooltip: 'بحث',
+                searchPlaceholder: 'بحث'
+            },
+            pagination: {
+                labelRowsSelect: 'سجلات',
+                labelRowsPerPage: 'سجل للصفحة',
+                firstAriaLabel: 'الصفحة الاولة',
+                firstTooltip: 'الصفحة الاولة',
+                previousAriaLabel: 'الصفحة السابقة',
+                previousTooltip: 'الصفحة السابقة',
+                nextAriaLabel: 'الصفحة التالية',
+                nextTooltip: 'الصفحة التالية',
+                lastAriaLabel: 'الصفحة الاخيرة',
+                lastTooltip: 'الصفحة الاخيرة',
+            }
+
         }}
         options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
         actions={[

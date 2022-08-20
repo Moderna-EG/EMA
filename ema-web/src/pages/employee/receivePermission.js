@@ -99,7 +99,14 @@ const ReceivePermission = () => {
             <div className="employee-main">
                 <div className="employee-wrapper">
                     { !loading ? <ReceivePermissionInvoice items={permissionItems} permission={permission} /> : ''}
-                    <ReceivePermissionTable items={permissionItems} loading={loading} deletePermissionItem={deletePermissionItem} updatePermissionItem={updatePermissionItem} errorMessage={errorMessage}/>
+                    <ReceivePermissionTable 
+                    items={permissionItems} 
+                    loading={loading} 
+                    deletePermissionItem={deletePermissionItem} 
+                    updatePermissionItem={updatePermissionItem} 
+                    errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
+                    />
                 </div>
                 <div>
                     <Sidebar />

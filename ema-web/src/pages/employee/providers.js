@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import Sidebar from '../../components/sidebar/Sidebar'
-import ReceivePermissionForm from '../../components/forms/ReceivePermission'
 import './employee.css'
-import SuccessModal from '../../components/modal/success'
 import ProvidersTable from '../../components/tables/providers'
 import { useNavigate } from 'react-router-dom'
 

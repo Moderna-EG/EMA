@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { userRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
 import UpdateMessage from '../update-message/update-message'
@@ -117,7 +116,7 @@ const EmployeesTable = ({ modal }) => {
 
 
     const columns = [
-        { title: 'تاريخ التسجيل', field: 'registrationdate', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
+        { title: 'تاريخ التسجيل', field: 'registrationdate', editable: 'never', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'الهاتف', field: 'phone', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'البريد', field: 'email', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'الاسم ', field: 'name', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
@@ -134,18 +133,47 @@ const EmployeesTable = ({ modal }) => {
     return (<div>
 
             { errorMessage ?
-                <UpdateMessage message={errorMessage}/>
+                <UpdateMessage message={errorMessage} setErrorMessage={setErrorMessage}/>
                 :
                 ''
             }
 
             <MaterialTable 
-            title="" 
+            title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الموظفيين</h4>}
             isLoading={loading}
             columns={columns} 
             data={data} 
             localization={{
-                body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                body: {
+                    emptyDataSourceMessage: 'لا يوجد سجلات',
+                    
+                },
+                editRow: {
+                    deleteText: 'مسح',
+                    cancelTooltip: 'الغاء'
+                },
+                header: {
+                    actions: ''
+                },
+                toolbar: {
+                    exportTitle: 'تنزيل',
+                    exportAriaLabel: 'تنزيل',
+                    searchTooltip: 'بحث',
+                    searchPlaceholder: 'بحث'
+                },
+                pagination: {
+                    labelRowsSelect: 'سجلات',
+                    labelRowsPerPage: 'سجل للصفحة',
+                    firstAriaLabel: 'الصفحة الاولة',
+                    firstTooltip: 'الصفحة الاولة',
+                    previousAriaLabel: 'الصفحة السابقة',
+                    previousTooltip: 'الصفحة السابقة',
+                    nextAriaLabel: 'الصفحة التالية',
+                    nextTooltip: 'الصفحة التالية',
+                    lastAriaLabel: 'الصفحة الاخيرة',
+                    lastTooltip: 'الصفحة الاخيرة',
+                }
+
             }}
             options={ { pageSize: 10, exportButton: true, actionsColumnIndex: 0 } }
             actions={[

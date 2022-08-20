@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './new-password.css'
 import logo from '../../images/EMA logo.png'
 import { authRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
 import { TailSpin } from 'react-loader-spinner'
 
-const NewPassword = (props) => {
+const NewPassword = () => {
 
     const navigate = useNavigate()
 

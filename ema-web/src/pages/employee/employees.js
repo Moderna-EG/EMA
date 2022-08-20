@@ -3,7 +3,6 @@ import Navbar from '../../components/navbar/Navbar'
 import Sidebar from '../../components/sidebar/Sidebar'
 import EmployeesTable from '../../components/tables/employees'
 import './employee.css'
-import EmployeeModal from '../../components/modal/employee'
 import { useNavigate } from 'react-router-dom'
 
 const EmployeesPage = () => {
@@ -51,7 +50,6 @@ const EmployeesPage = () => {
             ?
             <div>
             <Navbar />
-            {showModal ? <EmployeeModal modal={closeModal} /> : null }
             <div className="employee-main">
                 <div className="employee-wrapper">
                     <EmployeesTable modal={openModal} />

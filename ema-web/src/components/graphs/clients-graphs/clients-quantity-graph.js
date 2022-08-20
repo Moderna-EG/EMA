@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Chart from 'chart.js/auto'
 import { Bar } from 'react-chartjs-2'
 import { userRequest } from '../../../api/requests'
 import { TailSpin } from 'react-loader-spinner'
 
 const ClientsQuantityGraph = () => {
-
-    const navigate = useNavigate()
 
     const [fromDate, setFromDate] = useState()
     const [toDate, setToDate] = useState()

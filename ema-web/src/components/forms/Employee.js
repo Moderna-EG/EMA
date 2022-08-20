@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './permissionForms.css'
 import { userRequest } from '../../api/requests'
 import { TailSpin } from 'react-loader-spinner'
-import { Badge } from '@material-ui/core'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
-import { NavLink } from 'react-router-dom'
 import SuccessMessage from '../success-message/success-message'
 
 
@@ -63,7 +60,7 @@ const EmployeeForm = () => {
             setSuccessText(response.data.message)
             setShowSuccess(true)
 
-            setTimeout(() => setShowSuccess(false), 5000)
+            setTimeout(() => setShowSuccess(false), 2000)
         })
         .catch(error => {
             setLoading(false)

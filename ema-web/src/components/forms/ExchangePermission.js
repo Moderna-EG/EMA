@@ -29,22 +29,22 @@ const ExchangePermissionForm = () => {
 
     const submit = () => {
 
-        setLoading(true)
 
         if(!item) {
             return setItemError('الصنف مطلوب')
         }
 
-        const receivePermissionItems = JSON.parse(localStorage.getItem('exchangePermissionItems'))
+        const exchangePermissionItems = JSON.parse(localStorage.getItem('exchangePermissionItems'))
 
-        for(let i=0;i<receivePermissionItems.length;i++) {
+        const checkItem = items.filter(recordedItem => recordedItem.name === item)
 
-            if(receivePermissionItems[i].name === item) {
-                return setItemError('هذا الصنف مسجل مسبقا')
-            }
-        }
+        if(checkItem.length === 0) return setItemError('هذا الصنف غير موجود')
 
-        if(!quantity) {
+        const checkCartItem = exchangePermissionItems.filter(recordedItem => recordedItem.name === item)
+
+        if(checkCartItem.length === 1) return setItemError('هذا الصنف مسجل مسبقا') 
+
+        if(!quantity || !Number.parseInt(quantity)) {
             return setQuantityError('الكمية مطلوبة')
         }
 
@@ -53,6 +53,7 @@ const ExchangePermissionForm = () => {
         setLoading(true)
 
         const pickedItem = items.filter(itemElement => itemElement.name === item)[0]
+        setLoading(true)
 
         userRequest.get(`/inventory/items/${pickedItem.id}`)
         .then(response => {
@@ -82,7 +83,7 @@ const ExchangePermissionForm = () => {
                     bookValue: PRICE * parseInt(quantity)
                 }
 
-                localStorage.setItem('exchangePermissionItems', JSON.stringify([...receivePermissionItems, itemInfo]))
+                localStorage.setItem('exchangePermissionItems', JSON.stringify([...exchangePermissionItems, itemInfo]))
 
                 setCartItems(cartItems + 1)
                 clearInputs()
@@ -99,6 +100,9 @@ const ExchangePermissionForm = () => {
         setItem('')
         setQuantity('')
         setPrice('')
+        setItemError('')
+        setQuantityError('')
+        setPriceError('')
     }
 
     useEffect(() => {
@@ -140,7 +144,7 @@ const ExchangePermissionForm = () => {
                         <div>
                             <label>الكمية</label>
                             <p>{quantityError}</p>
-                            <input type="text" value={quantity} default={0} onChange={e => setQuantity(parseInt(e.target.value))} placeholder="كمية الصنف المصرف" />
+                            <input type="numeric" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="كمية الصنف المصرف" />
                         </div>
                     </div>
                 </form>

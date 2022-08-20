@@ -54,12 +54,41 @@ const ExchangePermissionsTable = () => {
     return (<div>
 
         <MaterialTable 
-        title="" 
+        title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الاذن المنصرفة</h4>}
         isLoading={loading}
         columns={columns} 
         data={data} 
         localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+            body: {
+                emptyDataSourceMessage: 'لا يوجد سجلات',
+                
+            },
+            editRow: {
+                deleteText: 'مسح',
+                cancelTooltip: 'الغاء'
+            },
+            header: {
+                actions: ''
+            },
+            toolbar: {
+                exportTitle: 'تنزيل',
+                exportAriaLabel: 'تنزيل',
+                searchTooltip: 'بحث',
+                searchPlaceholder: 'بحث'
+            },
+            pagination: {
+                labelRowsSelect: 'سجلات',
+                labelRowsPerPage: 'سجل للصفحة',
+                firstAriaLabel: 'الصفحة الاولة',
+                firstTooltip: 'الصفحة الاولة',
+                previousAriaLabel: 'الصفحة السابقة',
+                previousTooltip: 'الصفحة السابقة',
+                nextAriaLabel: 'الصفحة التالية',
+                nextTooltip: 'الصفحة التالية',
+                lastAriaLabel: 'الصفحة الاخيرة',
+                lastTooltip: 'الصفحة الاخيرة',
+            }
+
         }}
         options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
         actions={[

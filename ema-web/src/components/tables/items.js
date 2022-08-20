@@ -7,15 +7,13 @@ import { useNavigate } from 'react-router-dom'
 import UpdateMessage from '../update-message/update-message'
 
 
-const ItemsTable = ({ modal }) => {
+const ItemsTable = () => {
 
     const navigate = useNavigate()
 
     const [isAdmin, setIsAdmin] = useState(false)
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
-    const [load, setLoad] = useState(true)
-    const [editable, setEditable] = useState(false)
     const [errorMessage, setErrorMessage] = useState()
 
 
@@ -89,25 +87,54 @@ const ItemsTable = ({ modal }) => {
         { title: 'الكمية', field: 'quantity', editable: 'never', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'الكود', field: 'code', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'اسم الصنف', field: 'name', headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
-        { title: 'صنف', render: prop => <ContentPasteIcon />, headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
+       // { title: 'صنف', render: prop => <ContentPasteIcon />, headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'} },
         { title: 'كارتة الصنف',render: prop => <button className="action-btn" onClick={ e => navigate(`/inventory/items/${prop.id}/item-card`)}>عرض</button>, headerStyle: {fontWeight: 'bold', fontFamily: 'Cairo, sans-serif'}}
     ]
     
     return (<div>
                 { errorMessage ?
-                <UpdateMessage message={errorMessage}/>
+                <UpdateMessage message={errorMessage} setErrorMessage={setErrorMessage} />
                 :
                 ''
                 }
         { isAdmin
             ?
             <MaterialTable 
-                title="" 
+                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الاصناف</h4>}
                 isLoading={loading}
                 columns={columns} 
                 data={data} 
                 localization={{
-                    body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        
+                    },
+                    editRow: {
+                        deleteText: 'مسح',
+                        cancelTooltip: 'الغاء'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تنزيل',
+                        exportAriaLabel: 'تنزيل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
                 }}
                 options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
                 actions={[
@@ -135,12 +162,41 @@ const ItemsTable = ({ modal }) => {
                     :
 
                     <MaterialTable 
-                    title="" 
+                    title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الاصناف</h4>}
                     isLoading={loading}
                     columns={columns} 
                     data={data} 
                     localization={{
-                        body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                        body: {
+                            emptyDataSourceMessage: 'لا يوجد سجلات',
+                            
+                        },
+                        editRow: {
+                            deleteText: 'مسح',
+                            cancelTooltip: 'الغاء'
+                        },
+                        header: {
+                            actions: ''
+                        },
+                        toolbar: {
+                            exportTitle: 'تنزيل',
+                            exportAriaLabel: 'تنزيل',
+                            searchTooltip: 'بحث',
+                            searchPlaceholder: 'بحث'
+                        },
+                        pagination: {
+                            labelRowsSelect: 'سجلات',
+                            labelRowsPerPage: 'سجل للصفحة',
+                            firstAriaLabel: 'الصفحة الاولة',
+                            firstTooltip: 'الصفحة الاولة',
+                            previousAriaLabel: 'الصفحة السابقة',
+                            previousTooltip: 'الصفحة السابقة',
+                            nextAriaLabel: 'الصفحة التالية',
+                            nextTooltip: 'الصفحة التالية',
+                            lastAriaLabel: 'الصفحة الاخيرة',
+                            lastTooltip: 'الصفحة الاخيرة',
+                        }
+    
                     }}
                     options={ { pageSize: 10, exportButton: true, actionsColumnIndex: -1 } }
                     actions={[
@@ -148,7 +204,7 @@ const ItemsTable = ({ modal }) => {
                             icon: TableIcons.Add,
                             tooltip: 'اضافة صنف',
                             isFreeAction: true,
-                            onClick: () => modal()
+                            onClick: () => navigate('/inventory/item-form')
                         },
                         {
                             icon: TableIcons.Refresh,

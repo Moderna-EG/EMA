@@ -39,6 +39,8 @@ const ItemCard = () => {
         })
         .catch(error => {
 
+            setLoading(false)
+
             const errorData = error.response.data
 
             if(errorData.field === 'itemId') {

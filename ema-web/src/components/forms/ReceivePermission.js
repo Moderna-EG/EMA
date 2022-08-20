@@ -31,6 +31,9 @@ const ReceivePermissionForm = ({ modal }) => {
         setItem('')
         setQuantity('')
         setPrice('')
+        setItemError('')
+        setQuantityError('')
+        setPriceError('')
     }
 
     const submit = (e) => {
@@ -40,22 +43,21 @@ const ReceivePermissionForm = ({ modal }) => {
             return setItemError('الصنف مطلوب')
         }
 
+        const checkItem = items.filter(recordedItem => recordedItem.name === item)
+
+        if(checkItem.length === 0) return setItemError('هذا الصنف غير موجود')
+
         const receivePermissionItems = JSON.parse(localStorage.getItem('receivePermissionItems'))
 
-        for(let i=0;i<receivePermissionItems.length;i++) {
+        const checkCartItem = receivePermissionItems.filter(recordedItem => recordedItem.name === item)
 
-            if(receivePermissionItems[i].name === item) {
-                return setItemError('هذا الصنف مسجل مسبقا')
-            }
-        }
+        if(checkCartItem.length === 1) return setItemError('هذا الصنف مسجل مسبقا') 
 
-        
-
-        if(!quantity) {
+        if(!quantity || !Number.parseInt(quantity)) {
             return setQuantityError('الكمية مطلوبة')
         }
 
-        if(!price) {
+        if(!price || !Number.parseInt(price)) {
             return setPriceError('السعر مطلوب')
         }
 

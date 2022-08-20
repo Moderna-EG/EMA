@@ -3,7 +3,6 @@ import Navbar from '../../components/navbar/Navbar'
 import Sidebar from '../../components/sidebar/Sidebar'
 import ItemsTable from '../../components/tables/items'
 import './employee.css'
-import ItemModal from '../../components/modal/Item'
 import { useNavigate } from 'react-router-dom'
 
 
@@ -43,7 +42,6 @@ const EmployeeItems = () => {
             ?
             <div>
             <Navbar />
-            {showModal ? <ItemModal modal={closeModal} /> : null }
             <div className="employee-main">
                 <div className="employee-wrapper">
                     <ItemsTable modal={openModal}/>

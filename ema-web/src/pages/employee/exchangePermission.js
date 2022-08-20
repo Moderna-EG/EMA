@@ -87,7 +87,14 @@ const ExchangePermission = () => {
             <div className="employee-main">
                 <div className="employee-wrapper">
                     { !loading ? <ExchangePermissionInvoice items={permissionItems} permission={permission}/> : '' }
-                    <ExchangePermissionTable items={permissionItems} loading={loading} updatePermissionItem={updatePermissionItem} deletePermissionItem={deletePermissionItem} errorMessage={errorMessage} />
+                    <ExchangePermissionTable 
+                    items={permissionItems} 
+                    loading={loading} 
+                    updatePermissionItem={updatePermissionItem} 
+                    deletePermissionItem={deletePermissionItem} 
+                    errorMessage={errorMessage} 
+                    setErrorMessage={setErrorMessage}
+                    />
                     
                 </div>
                 <div>

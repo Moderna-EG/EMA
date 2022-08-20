@@ -1,12 +1,9 @@
 import React, { useState, useEffect} from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import AddBusinessIcon from '@mui/icons-material/AddBusiness'
-import LocalShippingIcon from '@mui/icons-material/LocalShipping'
-import { userRequest } from '../../api/requests'
 import UpdateMessage from '../update-message/update-message'
 
-const ExchangePermission = ({ items, loading, updatePermissionItem, deletePermissionItem, errorMessage }) => {
+const ExchangePermission = ({ items, loading, updatePermissionItem, deletePermissionItem, errorMessage, setErrorMessage }) => {
 
     const columns = [
         { 
@@ -63,17 +60,50 @@ const ExchangePermission = ({ items, loading, updatePermissionItem, deletePermis
     return (<div>
         {
             errorMessage ?
-            <UpdateMessage message={errorMessage} />
+            <UpdateMessage message={errorMessage} setErrorMessage={setErrorMessage} />
             :
             ''
         }
         {
             isAdmin ?
             <MaterialTable 
-        title={permissionId}
+            title={
+                <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>
+                     اذن صرف رقم {permissionId}
+                </h4>
+            }
         isLoading={loading}
         localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+            body: {
+                emptyDataSourceMessage: 'لا يوجد سجلات',
+                
+            },
+            editRow: {
+                deleteText: 'مسح',
+                cancelTooltip: 'الغاء'
+            },
+            header: {
+                actions: ''
+            },
+            toolbar: {
+                exportTitle: 'تنزيل',
+                exportAriaLabel: 'تنزيل',
+                searchTooltip: 'بحث',
+                searchPlaceholder: 'بحث'
+            },
+            pagination: {
+                labelRowsSelect: 'سجلات',
+                labelRowsPerPage: 'سجل للصفحة',
+                firstAriaLabel: 'الصفحة الاولة',
+                firstTooltip: 'الصفحة الاولة',
+                previousAriaLabel: 'الصفحة السابقة',
+                previousTooltip: 'الصفحة السابقة',
+                nextAriaLabel: 'الصفحة التالية',
+                nextTooltip: 'الصفحة التالية',
+                lastAriaLabel: 'الصفحة الاخيرة',
+                lastTooltip: 'الصفحة الاخيرة',
+            }
+
         }}
         columns={columns} 
         data={items}
@@ -90,7 +120,36 @@ const ExchangePermission = ({ items, loading, updatePermissionItem, deletePermis
         title={permissionId}
         isLoading={loading}
         localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+            body: {
+                emptyDataSourceMessage: 'لا يوجد سجلات',
+                
+            },
+            editRow: {
+                deleteText: 'مسح',
+                cancelTooltip: 'الغاء'
+            },
+            header: {
+                actions: ''
+            },
+            toolbar: {
+                exportTitle: 'تنزيل',
+                exportAriaLabel: 'تنزيل',
+                searchTooltip: 'بحث',
+                searchPlaceholder: 'بحث'
+            },
+            pagination: {
+                labelRowsSelect: 'سجلات',
+                labelRowsPerPage: 'سجل للصفحة',
+                firstAriaLabel: 'الصفحة الاولة',
+                firstTooltip: 'الصفحة الاولة',
+                previousAriaLabel: 'الصفحة السابقة',
+                previousTooltip: 'الصفحة السابقة',
+                nextAriaLabel: 'الصفحة التالية',
+                nextTooltip: 'الصفحة التالية',
+                lastAriaLabel: 'الصفحة الاخيرة',
+                lastTooltip: 'الصفحة الاخيرة',
+            }
+
         }}
         columns={columns} 
         data={items}

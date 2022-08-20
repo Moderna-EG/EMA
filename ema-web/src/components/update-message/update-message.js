@@ -1,23 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import './update-message.css'
-import CloseIcon from '@mui/icons-material/Close'
 
-const UpdateMessage = ({ message }) => {
-
-    const [show, setShow] = useState(true)
-
+const UpdateMessage = ({ message, setErrorMessage }) => {
 
 
     return (
         <>
-        { show ? 
-        <div className="update-message" onClick={ e => setShow(false) }>
+        <div className="update-message" onClick={ e => setErrorMessage() }>
             <p>{message}</p>
         </div>
-        :
-        ''
-        }
-
         </>
     )
 }

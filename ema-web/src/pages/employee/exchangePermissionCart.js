@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import Sidebar from '../../components/sidebar/Sidebar'
-import ReceivePermissionForm from '../../components/forms/ReceivePermission'
 import './employee.css'
-import SuccessModal from '../../components/modal/success'
 import ExchangePermissionCartTable from '../../components/tables/exchangePermissionCart'
-import { userRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
 
 const ExchangePermissionCart = () => {

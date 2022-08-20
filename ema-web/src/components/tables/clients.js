@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { userRequest } from '../../api/requests'
 import './table.css'
 import { useNavigate } from 'react-router-dom'
@@ -38,6 +37,23 @@ const ClientsTable = () => {
     const toProviderItemsForm = (clientId) => {
         localStorage.setItem('clientId', JSON.stringify(clientId))
         navigate(`/inventory/exchange-permissions/items-form`)
+    }
+
+    const formateDateWithZeros = editedDate => {
+
+        let splittedDate = editedDate.split('-')
+        let newMonth = splittedDate[0]
+        let newDay = splittedDate[1]
+
+        if(splittedDate[0].length === 1) {
+            newMonth = '0' + splittedDate[0]
+        }
+
+        if(splittedDate[1].length === 1) {
+            newDay = '0' + splittedDate[1]
+        }
+
+        return `${newMonth}-${newDay}-${splittedDate[2]}`
     }
 
 
@@ -93,6 +109,10 @@ const ClientsTable = () => {
             newClientData.clientOperationDate.isNew = false
         }
 
+        const editedDate = formateDateWithZeros(newClientData.clientOperationDate.operationDate)
+
+        newClientData.clientOperationDate.operationDate = editedDate
+        
 
         userRequest.put(`/inventory/clients/${newClient.id}`, newClientData)
         .then(response => setLoading(true))
@@ -120,7 +140,7 @@ const ClientsTable = () => {
 
         const newDate = new Date(operationDate)
 
-        return `${newDate.getMonth() + 1}-${newDate.getDate()}-${newDate.getFullYear()}`
+        return `${newDate.getMonth() + 1}-${newDate.getDate() + 1 }-${newDate.getFullYear()}`
     }
 
     const columns = [
@@ -140,7 +160,7 @@ const ClientsTable = () => {
     return (
         <div>
             { errorMessage ?
-                <UpdateMessage message={errorMessage}/>
+                <UpdateMessage message={errorMessage} setErrorMessage={setErrorMessage} />
                 :
                 ''
             }
@@ -148,12 +168,41 @@ const ClientsTable = () => {
             {
                 isAdmin ?
                 <MaterialTable 
-                title=""
+                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول العملاء</h4>}
                 isLoading={loading}
                 columns={columns}
                 data={data}
                 localization={{
-                    body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        
+                    },
+                    editRow: {
+                        deleteText: 'مسح',
+                        cancelTooltip: 'الغاء'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تنزيل',
+                        exportAriaLabel: 'تنزيل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
                 }}
                 options={{ pageSize: 10, exportButton: true }}
                 actions={[
@@ -182,12 +231,41 @@ const ClientsTable = () => {
             :
 
             <MaterialTable 
-                title=""
+                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول العملاء</h4>}
                 isLoading={loading}
                 columns={columns}
                 data={data}
                 localization={{
-                    body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        
+                    },
+                    editRow: {
+                        deleteText: 'مسح',
+                        cancelTooltip: 'الغاء'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تنزيل',
+                        exportAriaLabel: 'تنزيل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
                 }}
                 options={{ pageSize: 10, exportButton: true }}
                 actions={[

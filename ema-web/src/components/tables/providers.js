@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import { userRequest } from '../../api/requests'
 import './table.css'
 import { useNavigate } from 'react-router-dom'
@@ -140,7 +139,7 @@ const ProvidersTable = () => {
     return (
         <div>
             { errorMessage ?
-                <UpdateMessage message={errorMessage} />
+                <UpdateMessage message={errorMessage} setErrorMessage={setErrorMessage}  />
                 :
                 ''
             }
@@ -149,11 +148,40 @@ const ProvidersTable = () => {
                 isAdmin
                 ?
                 <MaterialTable 
-                title=""
+                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الموردين</h4>}
                 isLoading={loading}
                 columns={columns}
                 localization={{
-                    body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        
+                    },
+                    editRow: {
+                        deleteText: 'مسح',
+                        cancelTooltip: 'الغاء'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تنزيل',
+                        exportAriaLabel: 'تنزيل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
                 }}
                 data={data}
                 options={{ pageSize: 10, exportButton: true }}
@@ -183,11 +211,41 @@ const ProvidersTable = () => {
                 :
 
                 <MaterialTable 
-                title=""
+                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الموردين</h4>}
                 isLoading={loading}
                 columns={columns}
                 localization={{
-                    body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        
+                    },
+                    editRow: {
+                        deleteText: 'مسح',
+                        cancelTooltip: 'الغاء'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تنزيل',
+                        exportAriaLabel: 'تنزيل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+                    
+
                 }}
                 data={data}
                 options={{ pageSize: 10, exportButton: true }}

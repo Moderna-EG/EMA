@@ -47,14 +47,13 @@ const ItemForm = () => {
             setSuccessText(response.data.message)
             setShowSuccess(true)
 
-            setTimeout(() => setShowSuccess(false), 3000)
+            setTimeout(() => setShowSuccess(false), 2000)
         })
         .catch(error => {
             setLoading(false)
 
             console.error(error)
-
-            
+   
             const errorData = error.response.data
 
             if(errorData.field === 'name')

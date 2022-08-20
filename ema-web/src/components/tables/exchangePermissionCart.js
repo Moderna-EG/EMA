@@ -1,19 +1,17 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from './TableIcons'
-import AddBusinessIcon from '@mui/icons-material/AddBusiness'
-import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import { userRequest } from '../../api/requests'
 import { useNavigate } from 'react-router-dom'
+import { TailSpin } from 'react-loader-spinner'
 
 const ExchangePermissionCart = () => {
 
     const navigate = useNavigate()
     const [items, setItems] = useState(JSON.parse(localStorage.getItem('exchangePermissionItems')))
+    const [isLoading, setIsLoading] = useState(false)
     const user = JSON.parse(localStorage.getItem('user'))
     const client = JSON.parse(localStorage.getItem('clientId'))
-
-    useEffect(() => {},[items])
 
     const submit = () => {
 
@@ -27,25 +25,38 @@ const ExchangePermissionCart = () => {
             items: items
         }
 
+        setIsLoading(true)
         userRequest.post('/inventory/exchange-permissions', permissionData)
         .then(response => {
+            setIsLoading(false)
             navigate(`/inventory/exchange-permissions/${response.data.permissionId}`)
         })
-        .catch(error => console.error((error)))
+        .catch(error => {
+            console.error(error)
+            setIsLoading(false)
+        })
     }
 
-    const deleteItem = (itemId) => {
-        const newItems = items.filter(item => item.id !== itemId)
+    const deleteItem = async (deletedItem) => {
+
+        const newItems = []
+
+        for(let i=0;i<items.length;i++) {
+
+            if(items[i].itemId === deletedItem.itemId) {
+                continue
+            }
+
+            newItems.push(items[i])
+        }
+        
+        if(newItems.length === 0) {
+            return navigate('/inventory/exchange-permissions')
+        }
+
         setItems(newItems)
     }
 
-    const updateItem = (newItem, oldItem) => {
-        const storedItems = items.filter(item => item.id !== oldItem.id)
-        newItem.bookValue = newItem.quantity * newItem.price
-        setItems([...storedItems, newItem])
-    }
-
-    
 
     const columns = [
         { 
@@ -80,14 +91,48 @@ const ExchangePermissionCart = () => {
     
     return (<div>
         <MaterialTable 
-        title=""
+        title={ isLoading ? 
+        <TailSpin color="red" width="40" height="40" /> 
+        :
+        <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول تاكيد اذن الصرف</h4>  
+        }
         localization={{
-            body: { emptyDataSourceMessage: 'لا يوجد سجلات' },
-            header: { actions: '' }
+            body: {
+                emptyDataSourceMessage: 'لا يوجد سجلات',
+                
+            },
+            editRow: {
+                deleteText: 'مسح',
+                cancelTooltip: 'الغاء'
+            },
+            header: {
+                actions: ''
+            },
+            toolbar: {
+                exportTitle: 'تنزيل',
+                exportAriaLabel: 'تنزيل',
+                searchTooltip: 'بحث',
+                searchPlaceholder: 'بحث'
+            },
+            pagination: {
+                labelRowsSelect: 'سجلات',
+                labelRowsPerPage: 'سجل للصفحة',
+                firstAriaLabel: 'الصفحة الاولة',
+                firstTooltip: 'الصفحة الاولة',
+                previousAriaLabel: 'الصفحة السابقة',
+                previousTooltip: 'الصفحة السابقة',
+                nextAriaLabel: 'الصفحة التالية',
+                nextTooltip: 'الصفحة التالية',
+                lastAriaLabel: 'الصفحة الاخيرة',
+                lastTooltip: 'الصفحة الاخيرة',
+            }
+
         }}
         columns={columns} 
         data={items}
-        
+        editable={{
+            onRowDelete: deleteItem,
+        }}
         actions={[
             {
                 icon: TableIcons.Confirm,
@@ -95,11 +140,6 @@ const ExchangePermissionCart = () => {
                 isFreeAction: true,
                 onClick: () => submit()
             },
-            {
-                icon: TableIcons.Delete,
-                tooltip: 'ازالة صنف',
-                onClick: (event, rowData) => deleteItem(rowData.id)
-            }
         ]}
         options={ { pageSize: 10 } }
         icons={TableIcons} />
