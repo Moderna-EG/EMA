@@ -272,8 +272,6 @@ const getItemCard = async (request, response) => {
 
         permissions = await addItemAveragesByTime(permissions)
 
-        console.log(permissions)
-
 
         return response.status(200).json({
             accepted: true,

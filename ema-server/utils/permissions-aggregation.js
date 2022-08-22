@@ -19,7 +19,7 @@ const joinExchangePermissionsByClients = (permissions, clients) => {
 
     for(let i=0;i<permissions.length;i++) {
         permissions[i].permissiontype = 'exchange'
-        for(let j=0;j<clients.length;i++) {
+        for(let j=0;j<clients.length;j++) {
             if(permissions[i].clientid == clients[j].id) {
                 permissions[i].clientcode = clients[j].code
                 permissions[i].clientname = clients[j].name
