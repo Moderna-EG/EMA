@@ -143,10 +143,6 @@ const ProvidersTable = () => {
                 :
                 ''
             }
-
-            {
-                isAdmin
-                ?
                 <MaterialTable 
                 title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الموردين</h4>}
                 isLoading={loading}
@@ -204,59 +200,6 @@ const ProvidersTable = () => {
                     onRowDelete: deleteProvider,
                     onRowUpdate: updateProvider
                 }}
-
-                icons={TableIcons}
-            />
-                
-                :
-
-                <MaterialTable 
-                title={ <h4 style={{ fontWeight: 'bold', fontFamily: 'Cairo, sans-serif' }}>جدول الموردين</h4>}
-                isLoading={loading}
-                columns={columns}
-                localization={{
-                    body: {
-                        emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
-                    },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
-                    },
-                    header: {
-                        actions: ''
-                    },
-                    toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
-                        searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
-                    },
-                    pagination: {
-                        labelRowsSelect: 'سجلات',
-                        labelRowsPerPage: 'سجل للصفحة',
-                        firstAriaLabel: 'الصفحة الاولة',
-                        firstTooltip: 'الصفحة الاولة',
-                        previousAriaLabel: 'الصفحة السابقة',
-                        previousTooltip: 'الصفحة السابقة',
-                        nextAriaLabel: 'الصفحة التالية',
-                        nextTooltip: 'الصفحة التالية',
-                        lastAriaLabel: 'الصفحة الاخيرة',
-                        lastTooltip: 'الصفحة الاخيرة',
-                    }
-                    
-
-                }}
-                data={data}
-                options={{ pageSize: 10, exportButton: true }}
-                actions={[
-                    {
-                        icon: TableIcons.Refresh,
-                        tooltip: 'تحديث',
-                        isFreeAction: true,
-                        onClick: () => setLoading(true)
-                    }
-                ]}
 
                 icons={TableIcons}
             />
